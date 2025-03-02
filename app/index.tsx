@@ -40,6 +40,10 @@ export default function HomeScreen() {
                     title="Logout"
                     onPress={() => router.push('/login')}
                 />
+                <AuthButton
+                    title="Go To onboarding"
+                    onPress={() => router.push('/onboarding')}
+                />
             </View>
         );
     }

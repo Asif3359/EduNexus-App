@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Stack, useRouter } from 'expo-router';
+import { Stack } from 'expo-router';
 import './../global.css';
 
 export default function RootLayout() {
@@ -36,6 +35,10 @@ export default function RootLayout() {
             <Stack.Screen
                 name="resetSuccess"
                 options={{ title: 'Profile', headerShown: false }}
+            />
+            <Stack.Screen
+                name="onboarding/index"
+                options={{ title: 'Onboarding', headerShown: false }}
             />
         </Stack>
     );
