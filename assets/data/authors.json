@@ -1,0 +1,82 @@
+[
+    {
+        "id": "1",
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "mobile": "+1-555-123-4567",
+        "bio": "React Native developer and educator with over 10 years of experience.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "2",
+        "name": "Jane Smith",
+        "email": "jane.smith@example.com",
+        "mobile": "+1-555-234-5678",
+        "bio": "UI/UX designer passionate about creating delightful user experiences.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "3",
+        "name": "Michael Scott",
+        "email": "michael.scott@example.com",
+        "mobile": "+1-555-345-6789",
+        "bio": "Web developer and JavaScript enthusiast who loves teaching.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "4",
+        "name": "Lisa Ray",
+        "email": "lisa.ray@example.com",
+        "mobile": "+1-555-456-7890",
+        "bio": "Photoshop expert and visual artist with a flair for creativity.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "5",
+        "name": "Tony Stark",
+        "email": "tony.stark@example.com",
+        "mobile": "+1-555-567-8901",
+        "bio": "Tech visionary teaching TypeScript and modern software tools.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "6",
+        "name": "Clara Oswald",
+        "email": "clara.oswald@example.com",
+        "mobile": "+1-555-678-9012",
+        "bio": "Illustrator trainer with a passion for teaching beginners.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "7",
+        "name": "Bruce Wayne",
+        "email": "bruce.wayne@example.com",
+        "mobile": "+1-555-789-0123",
+        "bio": "Backend engineer with deep knowledge in Node.js and security.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "8",
+        "name": "Natasha Romanoff",
+        "email": "natasha.romanoff@example.com",
+        "mobile": "+1-555-890-1234",
+        "bio": "Creative director specializing in branding and logos.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "9",
+        "name": "Peter Parker",
+        "email": "peter.parker@example.com",
+        "mobile": "+1-555-901-2345",
+        "bio": "Python developer and open source contributor.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    },
+    {
+        "id": "10",
+        "name": "Diana Prince",
+        "email": "diana.prince@example.com",
+        "mobile": "+1-555-012-3456",
+        "bio": "Mobile UI designer blending function with beauty.",
+        "image": "https://img.freepik.com/free-vector/old-library-interior-composition-with-human-character-bearded-man-reading-book-table_1284-54511.jpg?ga=GA1.1.29199133.1744744043&semt=ais_hybrid&w=740"
+    }
+]

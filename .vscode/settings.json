@@ -8,5 +8,6 @@
     "css.lint.unknownAtRules": "ignore",
     "[typescriptreact]": {
         "editor.defaultFormatter": "vscode.typescript-language-features"
-    }
+    },
+    "postman.settings.dotenv-detection-notification-visibility": false
 }

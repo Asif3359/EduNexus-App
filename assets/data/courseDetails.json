@@ -1,0 +1,842 @@
+[
+    {
+        "id": "1",
+        "title": "React Native for Beginners",
+        "category": "Development",
+        "instructor": "John Doe",
+        "email": "john.doe@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "4h 30m",
+        "rating": 4.5,
+        "price": 49.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 130,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/6oFuwhIibo4"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/oorfevovPWw"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/TXWYrnl6dZI"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/PjmAVh4Syvk"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/CZrJpEn6b4I"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/9yhlhKX7ZYM"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/6BlFPa_MGNg"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/XfREwe2sUGs"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/pbvC119ZRDw"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/hg_cpUnBkBc"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "2",
+        "title": "UI/UX Design Basics",
+        "category": "Design",
+        "instructor": "John Doe",
+        "email": "john.doe@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "3h",
+        "rating": 4.8,
+        "price": 39.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 130,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "3",
+        "title": "Advanced JavaScript",
+        "category": "Ai",
+        "instructor": "Michael Scott",
+        "email": "michael.scott@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "5h",
+        "rating": 4.7,
+        "price": 59.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 110,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "4",
+        "title": "Photoshop Mastery",
+        "category": "Design",
+        "instructor": "Lisa Ray",
+        "email": "lisa.ray@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "2h 30m",
+        "rating": 4.6,
+        "price": 29.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 110,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "5",
+        "title": "TypeScript Deep Dive",
+        "category": "Development",
+        "instructor": "Tony Stark",
+        "email": "tony.stark@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "6h",
+        "rating": 4.9,
+        "price": 69.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 110,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "6",
+        "title": "Illustrator Basics",
+        "category": "Design",
+        "instructor": "Clara Oswald",
+        "email": "clara.oswald@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "3h 15m",
+        "rating": 4.4,
+        "price": 34.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 100,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "7",
+        "title": "Node.js from Scratch",
+        "category": "Development",
+        "instructor": "Bruce Wayne",
+        "email": "bruce.wayne@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "5h 20m",
+        "rating": 4.8,
+        "price": 54.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 120,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "8",
+        "title": "Logo Design Bootcamp",
+        "category": "Design",
+        "instructor": "Natasha Romanoff",
+        "email": "natasha.romanoff@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "2h 10m",
+        "rating": 4.3,
+        "price": 24.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 100,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "9",
+        "title": "Python Essentials",
+        "category": "Development",
+        "instructor": "Peter Parker",
+        "email": "peter.parker@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "4h",
+        "rating": 4.5,
+        "price": 44.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 100,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "id": "10",
+        "title": "Mobile App UI Design",
+        "category": "Design",
+        "instructor": "Diana Prince",
+        "email": "diana.prince@example.com",
+        "image": "https://img.freepik.com/free-vector/it-job-concept-illustration_114360-27000.jpg?t=st=1744744091~exp=1744747691~hmac=d3464bc7dbb88c0f7e83ae504a7849a094d9396b025c860331adac10f7d7c046&w=740",
+        "duration": "3h 45m",
+        "rating": 4.6,
+        "price": 39.99,
+        "description": "Learn the fundamentals of React Native to build cross-platform mobile applications from scratch.",
+        "sellCount": 100,
+        "discount": 10,
+        "modules": [
+            {
+                "title": "Introduction to React Native",
+                "duration": "30m",
+                "videos": [
+                    {
+                        "title": "What is React Native?",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Setting up the environment",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Components and Styling",
+                "duration": "1h",
+                "videos": [
+                    {
+                        "title": "Basic Components",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Styling with StyleSheet",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Using Flexbox",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "Navigation and State",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "React Navigation",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Managing State with useState",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Props and Component Hierarchy",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            },
+            {
+                "title": "APIs and Final Project",
+                "duration": "1h 30m",
+                "videos": [
+                    {
+                        "title": "Fetching Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Displaying Data",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    },
+                    {
+                        "title": "Building a Simple App",
+                        "url": "https://www.youtube.com/embed/x4rFhThSX04"
+                    }
+                ]
+            }
+        ]
+    }
+]

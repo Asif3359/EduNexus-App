@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Carousel from 'react-native-reanimated-carousel';
 import SocialButton from '@/src/components/utils/auth/SocialButton';
 import EmailLoginButton from '@/src/components/utils/onboarding/EmailLoginButton';
+import { router } from 'expo-router';
 
 const { width, height } = Dimensions.get('window');
 
@@ -98,7 +99,7 @@ export default function Onboarding() {
                     {/* Login Buttons */}
                     <View className="mt-12 items-center gap-2 px-4">
                         <EmailLoginButton
-                            onPress={() => console.log('Email Login Pressed')}
+                            onPress={() => router.push('/login')}
                         />
 
                         {/* Social Login */}

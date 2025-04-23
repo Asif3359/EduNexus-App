@@ -1,0 +1,115 @@
+[
+    {
+        "id": "1",
+        "name": "Asif Ahammed",
+        "email": "asif@gmail.com",
+        "mobile": "+880123456789",
+        "image": "https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg",
+        "bio": "Aspiring full-stack developer passionate about tech and learning.",
+        "enrolledCourses": [
+            {
+                "courseId": "course_101",
+                "title": "React Native Basics",
+                "progress": 70,
+                "enrolledDate": "2025-03-20"
+            },
+            {
+                "courseId": "course_102",
+                "title": "Advanced JavaScript",
+                "progress": 45,
+                "enrolledDate": "2025-04-05"
+            }
+        ],
+        "institution": "Bangladesh University of Business & Technology (BUBT)",
+        "department": "Computer Science and Engineering",
+        "semester": "6th"
+    },
+    {
+        "id": "2",
+        "name": "Nusrat Jahan",
+        "email": "nusrat@example.com",
+        "mobile": "+8801987654321",
+        "image": "https://example.com/profile/nusrat.jpg",
+        "bio": "UI/UX enthusiast with a keen eye for design and detail.",
+        "enrolledCourses": [
+            {
+                "courseId": "course_103",
+                "title": "UI/UX Fundamentals",
+                "progress": 85,
+                "enrolledDate": "2025-02-15"
+            }
+        ],
+        "institution": "North South University",
+        "department": "Software Engineering",
+        "semester": "5th"
+    },
+    {
+        "id": "3",
+        "name": "Ahmed Nisat",
+        "email": "nisat@gmail.com",
+        "mobile": "+8801765432109",
+        "image": "https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg",
+        "bio": "Backend developer learning cloud infrastructure.",
+        "enrolledCourses": [
+            {
+                "courseId": "course_104",
+                "title": "Node.js Mastery",
+                "progress": 60,
+                "enrolledDate": "2025-01-10"
+            },
+            {
+                "courseId": "course_105",
+                "title": "AWS for Developers",
+                "progress": 35,
+                "enrolledDate": "2025-03-28"
+            }
+        ],
+        "institution": "American International University-Bangladesh",
+        "department": "Computer Science",
+        "semester": "7th"
+    },
+    {
+        "id": "4",
+        "name": "Fatima Khan",
+        "email": "fatima@example.com",
+        "mobile": "+8801323456789",
+        "image": "https://example.com/profile/fatima.jpg",
+        "bio": "ML enthusiast exploring AI-powered apps.",
+        "enrolledCourses": [
+            {
+                "courseId": "course_106",
+                "title": "Machine Learning Basics",
+                "progress": 90,
+                "enrolledDate": "2025-01-25"
+            }
+        ],
+        "institution": "University of Dhaka",
+        "department": "Data Science",
+        "semester": "4th"
+    },
+    {
+        "id": "5",
+        "name": "Tanvir Ahmed",
+        "email": "tanvir@example.com",
+        "mobile": "+8801900112233",
+        "image": "https://example.com/profile/tanvir.jpg",
+        "bio": "Passionate about mobile development and animations.",
+        "enrolledCourses": [
+            {
+                "courseId": "course_101",
+                "title": "React Native Basics",
+                "progress": 50,
+                "enrolledDate": "2025-04-01"
+            },
+            {
+                "courseId": "course_107",
+                "title": "Framer Motion for Mobile",
+                "progress": 20,
+                "enrolledDate": "2025-04-10"
+            }
+        ],
+        "institution": "East West University",
+        "department": "Software Engineering",
+        "semester": "6th"
+    }
+]
