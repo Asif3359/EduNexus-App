@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    SafeAreaView,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
@@ -7,7 +13,7 @@ export default function ResetSuccessScreen() {
     const router = useRouter();
 
     return (
-        <View className="flex-1 items-center justify-center bg-white px-6">
+        <SafeAreaView className="flex-1 items-center justify-center bg-white px-6">
             {/* Success Icon */}
             <View className="flex h-28 w-28 items-center justify-center rounded-full bg-green-400">
                 <FontAwesome name="check" size={48} color="white" />
@@ -36,6 +42,6 @@ export default function ResetSuccessScreen() {
                     new password.
                 </Text>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

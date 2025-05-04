@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import AuthInputField from '@/src/components/utils/auth/AuthInputField';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
+import { SafeAreaView } from 'react-native';
 
 export default function ForgotPasswordScreen() {
     const [email, setEmail] = useState('');
@@ -13,7 +14,7 @@ export default function ForgotPasswordScreen() {
     };
 
     return (
-        <View className="flex-1 items-center justify-center bg-white px-6">
+        <SafeAreaView className="flex-1 items-center justify-center bg-white px-6">
             {/* Illustration */}
             <Image
                 source={require('../assets/images/forgot_password.png')} // Add an appropriate image for forgot password
@@ -46,6 +47,6 @@ export default function ForgotPasswordScreen() {
                     <Text className="text-blue-600">Sign in</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

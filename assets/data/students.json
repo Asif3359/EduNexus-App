@@ -2,7 +2,7 @@
     {
         "id": "1",
         "name": "Asif Ahammed",
-        "email": "asif@gmail.com",
+        "email": "ra@gmail.com",
         "mobile": "+880123456789",
         "image": "https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg",
         "bio": "Aspiring full-stack developer passionate about tech and learning.",
@@ -27,7 +27,7 @@
     {
         "id": "2",
         "name": "Nusrat Jahan",
-        "email": "nusrat@example.com",
+        "email": "asif@gmail.com",
         "mobile": "+8801987654321",
         "image": "https://example.com/profile/nusrat.jpg",
         "bio": "UI/UX enthusiast with a keen eye for design and detail.",

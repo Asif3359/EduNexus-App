@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     FlatList,
     Image,
+    SafeAreaView,
 } from 'react-native';
 import coursesData from '@/assets/data/courseDetails.json';
 import { FontAwesome, Feather, MaterialIcons } from '@expo/vector-icons';
@@ -58,7 +59,7 @@ export default function CourseScreen() {
     };
 
     const renderCourse = ({ item }: any) => (
-        <View className="mb-6 rounded-2xl border border-purple-100 bg-white p-4 shadow-xl">
+        <SafeAreaView className="mb-6 rounded-2xl border border-purple-100 bg-white p-4 shadow-xl">
             {/* WebView instead of image */}
             <View className="mb-3 overflow-hidden rounded-xl">
                 <WebView
@@ -123,7 +124,7 @@ export default function CourseScreen() {
             <TouchableOpacity
                 onPress={() =>
                     router.push({
-                        pathname: '/PaymentScreen',
+                        pathname: '/paymentScreen',
                         params: {
                             courseId: item.id,
                             courseTitle: item.title,
@@ -138,11 +139,11 @@ export default function CourseScreen() {
                     Buy Now
                 </Text>
             </TouchableOpacity>
-        </View>
+        </SafeAreaView>
     );
 
     return (
-        <View className="flex-1 bg-gray-50 px-4 pt-6">
+        <SafeAreaView className="flex-1 bg-gray-50 px-4 pt-6">
             <Text className="mb-1 text-3xl font-bold text-gray-900">
                 Courses
             </Text>
@@ -192,6 +193,6 @@ export default function CourseScreen() {
                 contentContainerStyle={{ paddingBottom: 100 }}
             />
             <BottomNavigationBar />
-        </View>
+        </SafeAreaView>
     );
 }

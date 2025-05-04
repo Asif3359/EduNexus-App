@@ -1,5 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    SafeAreaView,
+} from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
 
@@ -80,7 +86,7 @@ export default function VerificationScreen() {
     };
 
     return (
-        <View className="flex-1 bg-white px-6 py-4">
+        <SafeAreaView className="flex-1 bg-white px-6 py-4">
             <Text className="mt-2 text-2xl font-bold text-gray-900">
                 Enter Verification Code
             </Text>
@@ -126,6 +132,6 @@ export default function VerificationScreen() {
                     title="Resend Code"
                 />
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

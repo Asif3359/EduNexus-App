@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     Dimensions,
     ScrollView,
+    SafeAreaView,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Collapsible from 'react-native-collapsible';
@@ -120,145 +121,154 @@ export default function CourseVideosScreen() {
 
     if (!course) {
         return (
-            <View className="flex-1 items-center justify-center bg-white">
+            <SafeAreaView className="flex-1 items-center justify-center bg-white">
                 <Text className="text-lg text-gray-700">Course not found.</Text>
-            </View>
+            </SafeAreaView>
         );
     }
 
     return (
-        <ScrollView
-            className="flex-1 bg-white"
-            showsVerticalScrollIndicator={false}
-        >
-            <View>
-                <WebView
-                    allowsFullscreenVideo
-                    javaScriptEnabled
-                    allowsInlineMediaPlayback
-                    mediaPlaybackRequiresUserAction={false}
-                    domStorageEnabled
-                    originWhitelist={['*']}
-                    source={{ uri: activeVideoUrl }}
-                    style={{
-                        height: playerHeight,
-                        width: '100%',
-                        borderRadius: 12,
-                        marginBottom: 16,
-                    }}
-                    injectedJavaScript={injectedJS}
-                    onMessage={event => {
-                        if (event.nativeEvent.data === '80_percent_watched') {
-                            markVideoSeen(activeVideoUrl);
-                        }
-                    }}
-                />
-            </View>
+        <SafeAreaView className="flex-1 bg-white">
+            <ScrollView
+                className="flex-1 bg-white"
+                showsVerticalScrollIndicator={false}
+            >
+                <View>
+                    <WebView
+                        allowsFullscreenVideo
+                        javaScriptEnabled
+                        allowsInlineMediaPlayback
+                        mediaPlaybackRequiresUserAction={false}
+                        domStorageEnabled
+                        originWhitelist={['*']}
+                        source={{ uri: activeVideoUrl }}
+                        style={{
+                            height: playerHeight,
+                            width: '100%',
+                            borderRadius: 12,
+                            marginBottom: 16,
+                        }}
+                        injectedJavaScript={injectedJS}
+                        onMessage={event => {
+                            if (
+                                event.nativeEvent.data === '80_percent_watched'
+                            ) {
+                                markVideoSeen(activeVideoUrl);
+                            }
+                        }}
+                    />
+                </View>
 
-            <View className="mb-6 px-4">
-                <Text className="mb-1 text-xl font-bold text-purple-800">
-                    {activeModuleName}
-                </Text>
-                <Text className="mb-2 text-base text-gray-600">
-                    {activeVideoTitle}
-                </Text>
-            </View>
+                <View className="mb-6 px-4">
+                    <Text className="mb-1 text-xl font-bold text-purple-800">
+                        {activeModuleName}
+                    </Text>
+                    <Text className="mb-2 text-base text-gray-600">
+                        {activeVideoTitle}
+                    </Text>
+                </View>
 
-            <View className="px-4 pb-10">
-                <Text className="mb-4 text-2xl font-bold text-purple-800">
-                    Course Modules
-                </Text>
-                <ScrollView
-                    style={{ maxHeight: 400 }}
-                    nestedScrollEnabled={true}
-                    showsVerticalScrollIndicator={false}
-                >
-                    {course.modules.map((item, index) => {
-                        const isActive = activeSections.includes(index);
-                        return (
-                            <View
-                                key={index}
-                                className={`mb-4 rounded-2xl shadow ${isActive ? 'border border-purple-200 bg-purple-50' : 'border border-gray-200 bg-white'}`}
-                            >
-                                <TouchableOpacity
-                                    onPress={() => toggleSection(index)}
-                                    className={`flex-row items-center justify-between rounded-t-2xl bg-purple-200 px-5 py-4`}
+                <View className="px-4 pb-10">
+                    <Text className="mb-4 text-2xl font-bold text-purple-800">
+                        Course Modules
+                    </Text>
+                    <ScrollView
+                        style={{ maxHeight: 400 }}
+                        nestedScrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
+                    >
+                        {course.modules.map((item, index) => {
+                            const isActive = activeSections.includes(index);
+                            return (
+                                <View
+                                    key={index}
+                                    className={`mb-4 rounded-2xl shadow ${isActive ? 'border border-purple-200 bg-purple-50' : 'border border-gray-200 bg-white'}`}
                                 >
-                                    <Text className="text-lg font-bold text-gray-800">
-                                        {item.title}
-                                    </Text>
-                                    <Icon
-                                        name={
-                                            isActive
-                                                ? 'chevron-up'
-                                                : 'chevron-down'
-                                        }
-                                        size={20}
-                                        color={isActive ? '#7c3aed' : '#6B7280'}
-                                    />
-                                </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => toggleSection(index)}
+                                        className={`flex-row items-center justify-between rounded-t-2xl bg-purple-200 px-5 py-4`}
+                                    >
+                                        <Text className="text-lg font-bold text-gray-800">
+                                            {item.title}
+                                        </Text>
+                                        <Icon
+                                            name={
+                                                isActive
+                                                    ? 'chevron-up'
+                                                    : 'chevron-down'
+                                            }
+                                            size={20}
+                                            color={
+                                                isActive ? '#7c3aed' : '#6B7280'
+                                            }
+                                        />
+                                    </TouchableOpacity>
 
-                                <Collapsible collapsed={!isActive}>
-                                    <View className="space-y-3 rounded-b-2xl bg-purple-50 px-5 py-4">
-                                        {item.videos.map((video, vidIdx) => {
-                                            const isSeen = seenVideos.includes(
-                                                video.url
-                                            );
-                                            return (
-                                                <TouchableOpacity
-                                                    key={`${index}-${vidIdx}`}
-                                                    onPress={() => {
-                                                        setActiveVideoUrl(
+                                    <Collapsible collapsed={!isActive}>
+                                        <View className="space-y-3 rounded-b-2xl bg-purple-50 px-5 py-4">
+                                            {item.videos.map(
+                                                (video, vidIdx) => {
+                                                    const isSeen =
+                                                        seenVideos.includes(
                                                             video.url
                                                         );
-                                                        setActiveVideoTitle(
-                                                            video.title
-                                                        );
-                                                        setActiveModuleName(
-                                                            item.title
-                                                        );
-                                                        saveVideoToHistory(
-                                                            course.id,
-                                                            video.title,
-                                                            video.url,
-                                                            item.title
-                                                        );
-                                                    }}
-                                                    className="my-1 flex-row items-center space-x-3 rounded-xl border border-purple-200 bg-white p-3 shadow-sm"
-                                                >
-                                                    <Feather
-                                                        name="play-circle"
-                                                        size={20}
-                                                        color="#7c3aed"
-                                                    />
-                                                    <Text
-                                                        className={`flex-1 px-2 font-medium ${isSeen ? 'text-gray-400' : 'text-purple-700'}`}
-                                                    >
-                                                        {video.title}
-                                                    </Text>
-                                                    {isSeen ? (
-                                                        <Feather
-                                                            name="check-circle"
-                                                            size={16}
-                                                            color="#10b981"
-                                                        />
-                                                    ) : (
-                                                        <Feather
-                                                            name="circle"
-                                                            size={16}
-                                                            color="#10b981"
-                                                        />
-                                                    )}
-                                                </TouchableOpacity>
-                                            );
-                                        })}
-                                    </View>
-                                </Collapsible>
-                            </View>
-                        );
-                    })}
-                </ScrollView>
-            </View>
-        </ScrollView>
+                                                    return (
+                                                        <TouchableOpacity
+                                                            key={`${index}-${vidIdx}`}
+                                                            onPress={() => {
+                                                                setActiveVideoUrl(
+                                                                    video.url
+                                                                );
+                                                                setActiveVideoTitle(
+                                                                    video.title
+                                                                );
+                                                                setActiveModuleName(
+                                                                    item.title
+                                                                );
+                                                                saveVideoToHistory(
+                                                                    course.id,
+                                                                    video.title,
+                                                                    video.url,
+                                                                    item.title
+                                                                );
+                                                            }}
+                                                            className="my-1 flex-row items-center space-x-3 rounded-xl border border-purple-200 bg-white p-3 shadow-sm"
+                                                        >
+                                                            <Feather
+                                                                name="play-circle"
+                                                                size={20}
+                                                                color="#7c3aed"
+                                                            />
+                                                            <Text
+                                                                className={`flex-1 px-2 font-medium ${isSeen ? 'text-gray-400' : 'text-purple-700'}`}
+                                                            >
+                                                                {video.title}
+                                                            </Text>
+                                                            {isSeen ? (
+                                                                <Feather
+                                                                    name="check-circle"
+                                                                    size={16}
+                                                                    color="#10b981"
+                                                                />
+                                                            ) : (
+                                                                <Feather
+                                                                    name="circle"
+                                                                    size={16}
+                                                                    color="#10b981"
+                                                                />
+                                                            )}
+                                                        </TouchableOpacity>
+                                                    );
+                                                }
+                                            )}
+                                        </View>
+                                    </Collapsible>
+                                </View>
+                            );
+                        })}
+                    </ScrollView>
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 }

@@ -11,51 +11,11 @@ import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WebView } from 'react-native-webview';
 import courseData from '@/assets/data/courseDetails.json';
-import BottomNavigationBar from './components/BottomNavigationBar';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomNavigationBar from '../components/BottomNavigationBar';
 
-export default function HomeScreen() {
+export default function UserHome() {
     const router = useRouter();
-    const [isFirstTime, setIsFirstTime] = useState<boolean | null>(null);
-    const [userExists, setUserExists] = useState<boolean | null>(null);
-    const [userInterests, setUserInterests] = useState<string[]>([]);
-
-    useEffect(() => {
-        const checkAppState = async () => {
-            try {
-                const firstTime = await AsyncStorage.getItem('isFirstTime');
-                if (firstTime === null) {
-                    await AsyncStorage.setItem('isFirstTime', 'false');
-                    setIsFirstTime(true);
-                } else {
-                    setIsFirstTime(false);
-                    const userLoggedIn =
-                        await AsyncStorage.getItem('userToken');
-                    setUserExists(!!userLoggedIn);
-
-                    const savedInterests =
-                        await AsyncStorage.getItem('userInterests');
-                    if (savedInterests) {
-                        setUserInterests(JSON.parse(savedInterests));
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading app state:', error);
-                setIsFirstTime(false);
-                setUserExists(false);
-            }
-        };
-
-        checkAppState();
-    }, []);
-
-    useEffect(() => {
-        if (isFirstTime === true) {
-            router.replace('/onboarding');
-        } else if (userExists === false) {
-            router.replace('/login');
-        }
-    }, [isFirstTime, router, userExists]);
 
     // Default user interest from course data
     const defaultUserInterests = {

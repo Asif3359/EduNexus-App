@@ -8,6 +8,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import RootStackParamList from '../types/navigation'; // Make sure this is defined correctly
 import BottomNavigationBar from '../components/BottomNavigationBar';
 import { router } from 'expo-router';
+import { SafeAreaView } from 'react-native';
 
 type CourseDetailsScreenNavigationProp = NativeStackNavigationProp<
     RootStackParamList,
@@ -55,7 +56,7 @@ export default function HistoryScreen() {
     };
 
     return (
-        <View className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="flex-1 bg-white px-4 pt-6">
                 <View className="mb-4 flex-row items-center justify-between">
                     <Text className="text-2xl font-bold text-purple-800">
@@ -116,6 +117,6 @@ export default function HistoryScreen() {
                 )}
             </ScrollView>
             <BottomNavigationBar />
-        </View>
+        </SafeAreaView>
     );
 }

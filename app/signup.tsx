@@ -12,6 +12,7 @@ import SocialButton from '@/src/components/utils/auth/SocialButton';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
 import AuthInputField from '@/src/components/utils/auth/AuthInputField';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
 
 export default function SignUpScreen() {
     const router = useRouter();
@@ -20,6 +21,7 @@ export default function SignUpScreen() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     const handleSignUp = async () => {
         setError('');
@@ -27,22 +29,20 @@ export default function SignUpScreen() {
 
         if (email && password && fullName) {
             try {
-                const response = await fetch(
-                    'http://10.0.2.2:8000/api/register',
-                    {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                        },
-                        body: JSON.stringify({
-                            name: fullName.trim(),
-                            email: email.trim(),
-                            password: password,
-                            role: 'student', // If your backend accepts this, or remove if unnecessary
-                        }),
-                    }
-                );
+                const response = await fetch(`${apiUrl}/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                    body: JSON.stringify({
+                        name: fullName.trim(),
+                        email: email.trim(),
+                        password: password,
+                        role: 'student', // If your backend accepts this, or remove if unnecessary
+                        Location: 'Khulna',
+                    }),
+                });
 
                 const data = await response.json();
 
@@ -51,7 +51,7 @@ export default function SignUpScreen() {
                     await AsyncStorage.setItem('userToken', data.token);
                     await AsyncStorage.setItem(
                         'userId',
-                        data.user.id.toString()
+                        data.user.user_id.toString()
                     );
                     await AsyncStorage.setItem('userName', data.user.name);
                     await AsyncStorage.setItem('userEmail', data.user.email);

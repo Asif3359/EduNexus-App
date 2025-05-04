@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native'; // Import CheckBox
+import {
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    SafeAreaView,
+} from 'react-native'; // Import CheckBox
 import axios from 'axios';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -7,13 +13,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthInputField from '@/src/components/utils/auth/AuthInputField';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
 import SocialButton from '@/src/components/utils/auth/SocialButton';
+import Constants from 'expo-constants';
 
 export default function LoginScreen() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('ra@gmail.com');
+    const [password, setPassword] = useState('12345678');
     const [error, setError] = useState('');
     const [remember, setRemember] = useState(true); // State for Remember me
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     const handleLogin = async () => {
         setError('');
@@ -21,11 +29,12 @@ export default function LoginScreen() {
         if (email && password) {
             try {
                 const response = await axios.post(
-                    'http://10.0.2.2:8000/api/login',
+                    `${apiUrl}/login`,
                     {
                         email: email,
                         password: password,
                         remember: remember, // Send remember me state
+                        Location: 'Khulna', // If your backend accepts this, or remove if unnecessary
                     },
                     {
                         headers: {
@@ -38,20 +47,38 @@ export default function LoginScreen() {
                 const data = response.data;
 
                 if (response.status === 200 && data.token) {
-                    console.log('Login successful:', data);
-
                     // Save token and user data in AsyncStorage
                     await AsyncStorage.setItem('userToken', data.token);
                     await AsyncStorage.setItem(
                         'userId',
-                        data.user.id.toString()
+                        data.user.user_id.toString()
                     );
                     await AsyncStorage.setItem('userName', data.user.name);
                     await AsyncStorage.setItem('userEmail', data.user.email);
+                    await AsyncStorage.setItem('userRole', data.user.role);
                     await AsyncStorage.setItem('isFirstTime', 'false');
                     await AsyncStorage.setItem('userLoggedIn', 'true');
 
-                    router.push('/'); // Redirect to home/dashboard
+                    console.log('User data saved:', {
+                        userId: data.user.user_id,
+                        userName: data.user.name,
+                        userEmail: data.user.email,
+                        userRole: data.user.role,
+                    });
+
+                    // if (data.user.role === 'admin') {
+                    //     router.replace('/admin');
+                    // }
+
+                    router.replace('/profileSetupScreen');
+
+                    // const userRole = await AsyncStorage.getItem('userRole');
+                    // if (userRole === 'student') {
+                    //     router.replace('/user');
+                    // }
+                    // if (userRole === 'teacher') {
+                    //     router.replace('/teacher');
+                    // }
                 } else {
                     setError(data.message || 'Login failed');
                 }
@@ -65,7 +92,7 @@ export default function LoginScreen() {
     };
 
     return (
-        <View className="flex-1 items-center justify-center bg-white px-6">
+        <SafeAreaView className="flex-1 items-center justify-center bg-white px-6">
             {/* Logo */}
             <Image
                 source={require('../assets/images/icon.png')}
@@ -93,15 +120,6 @@ export default function LoginScreen() {
                 isPassword={true}
                 secureTextEntry={true}
             />
-
-            {/* Remember me checkbox
-            <View className="flex-row items-center mt-4">
-                <CheckBox
-                    value={remember}
-                    onValueChange={setRemember} // Toggle remember state
-                />
-                <Text className="text-gray-600 ml-2">Remember me</Text>
-            </View> */}
 
             {error ? <Text className="mt-2 text-red-500">{error}</Text> : null}
 
@@ -151,6 +169,6 @@ export default function LoginScreen() {
                     <Text className="text-blue-600">Forgot Password?</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }

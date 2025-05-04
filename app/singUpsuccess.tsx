@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, Text, ActivityIndicator, Image } from 'react-native';
+import {
+    View,
+    Text,
+    ActivityIndicator,
+    Image,
+    SafeAreaView,
+} from 'react-native';
 // import Svg, { Path } from "react-native-svg";
 import { useRouter } from 'expo-router';
 
@@ -8,14 +14,14 @@ export default function SuccessScreen() {
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            router.push('/');
+            router.replace('/profileSetupScreen');
         }, 3000); // Show for 3 seconds
 
         return () => clearTimeout(timer);
     }, []);
 
     return (
-        <View className="flex-1 items-center justify-center bg-white px-6">
+        <SafeAreaView className="flex-1 items-center justify-center bg-white px-6">
             {/* Top Illustration */}
             <Image
                 source={require('../assets/images/PalmRecognition.png')} // Make sure you have the correct image path
@@ -34,6 +40,6 @@ export default function SuccessScreen() {
 
             {/* Loading Indicator */}
             <ActivityIndicator size="large" color="#4A90E2" className="mt-6" />
-        </View>
+        </SafeAreaView>
     );
 }

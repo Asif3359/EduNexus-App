@@ -6,22 +6,27 @@ import {
     ActivityIndicator,
     TouchableOpacity,
     Alert,
+    SafeAreaView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import studentsData from '@/assets/data/students.json';
 import BottomNavigationBar from '../components/BottomNavigationBar';
 import { useRouter } from 'expo-router'; // for navigation
 import { useEffect, useState } from 'react';
+import axios, { AxiosError } from 'axios';
+import Constants from 'expo-constants';
 
 export default function ProfileScreen() {
     const [student, setStudent] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     useEffect(() => {
         const fetchStudent = async () => {
             const email = await AsyncStorage.getItem('userEmail');
-            console.log('Email from AsyncStorage:', email);
+            const token = await AsyncStorage.getItem('userToken');
+            // console.log('Token from AsyncStorage:', token);
             if (email) {
                 const matchedStudent = studentsData.find(
                     s => s.email === email
@@ -43,9 +48,32 @@ export default function ProfileScreen() {
                 text: 'Logout',
                 style: 'destructive',
                 onPress: async () => {
-                    await AsyncStorage.clear();
-                    await AsyncStorage.setItem('isFirstTime', 'false');
-                    router.replace('/login'); // Redirect to login
+                    try {
+                        const token = await AsyncStorage.getItem('userToken');
+
+                        if (!token) {
+                            console.warn('No token found.');
+                            return;
+                        }
+
+                        await AsyncStorage.clear();
+                        await AsyncStorage.setItem('isFirstTime', 'false');
+                        console.log('Logout successful');
+                        router.replace('/login');
+                    } catch (error: unknown) {
+                        let errorMessage = 'Logout failed';
+                        console.log('Logout error:', error);
+
+                        if (axios.isAxiosError(error)) {
+                            errorMessage =
+                                error.response?.data?.message || error.message;
+                        } else if (error instanceof Error) {
+                            errorMessage = error.message;
+                        }
+
+                        console.error('Logout failed:', errorMessage);
+                        Alert.alert('Logout Failed', errorMessage);
+                    }
                 },
             },
         ]);
@@ -53,24 +81,24 @@ export default function ProfileScreen() {
 
     if (loading) {
         return (
-            <View className="flex-1 items-center justify-center">
+            <SafeAreaView className="flex-1 items-center justify-center">
                 <ActivityIndicator size="large" color="#6D28D9" />
-            </View>
+            </SafeAreaView>
         );
     }
 
     if (!student) {
         return (
-            <View className="flex-1 items-center justify-center">
+            <SafeAreaView className="flex-1 items-center justify-center">
                 <Text className="font-semibold text-red-600">
                     Student not found.
                 </Text>
-            </View>
+            </SafeAreaView>
         );
     }
 
     return (
-        <View className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="p-4">
                 <View className="mb-4 items-center">
                     <Image
@@ -123,6 +151,6 @@ export default function ProfileScreen() {
             </ScrollView>
 
             <BottomNavigationBar />
-        </View>
+        </SafeAreaView>
     );
 }

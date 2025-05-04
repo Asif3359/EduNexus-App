@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    SafeAreaView,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 import AuthButton from '@/src/components/utils/auth/AuthButton';
@@ -25,7 +31,7 @@ export default function ResetPasswordScreen() {
     };
 
     return (
-        <View className="flex-1 bg-white px-6 py-6">
+        <SafeAreaView className="flex-1 bg-white px-6 py-6">
             {/* Title */}
             <Text className="mb-2 text-2xl font-bold text-gray-800">
                 Create New Password
@@ -98,7 +104,7 @@ export default function ResetPasswordScreen() {
                     </Text>
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 2;

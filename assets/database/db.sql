@@ -8,28 +8,33 @@ CREATE TABLE Users (
     CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 2. Student Profiles
 CREATE TABLE StudentProfile (
     StudentID INT PRIMARY KEY,
     ProfilePicture TEXT,
     Mobile VARCHAR(15),
     Bio TEXT,
+    Location ENUM('Dhaka', 'Rajsahi', 'Khulna'),
     FOREIGN KEY (StudentID) REFERENCES Users(UserID)
 );
 
+-- 3. Teacher Profile
 CREATE TABLE TeacherProfile (
     TeacherID INT PRIMARY KEY,
     ProfilePicture TEXT,
     Mobile VARCHAR(15),
     Bio TEXT,
+    Location ENUM('Dhaka', 'Rajsahi', 'Khulna'),
     FOREIGN KEY (TeacherID) REFERENCES Users(UserID)
 );
 
--- 2. SKILLS
+-- 4. Skills
 CREATE TABLE Skills (
     SkillID INT PRIMARY KEY AUTO_INCREMENT,
     SkillName VARCHAR(100) UNIQUE
 );
 
+-- 5. User Skills
 CREATE TABLE UserSkills (
     UserID INT,
     SkillID INT,
@@ -38,12 +43,13 @@ CREATE TABLE UserSkills (
     FOREIGN KEY (SkillID) REFERENCES Skills(SkillID)
 );
 
--- 3. INTERESTS
+-- 6. Interests
 CREATE TABLE Interests (
     InterestID INT PRIMARY KEY AUTO_INCREMENT,
     InterestName VARCHAR(100) UNIQUE
 );
 
+-- 7. User Interests
 CREATE TABLE UserInterests (
     UserID INT,
     InterestID INT,
@@ -52,12 +58,13 @@ CREATE TABLE UserInterests (
     FOREIGN KEY (InterestID) REFERENCES Interests(InterestID)
 );
 
--- 4. SOCIAL LINKS
+-- 8. Social Links
 CREATE TABLE SocialLinks (
     SocialLinkID INT PRIMARY KEY AUTO_INCREMENT,
     SocailLinks VARCHAR(100) UNIQUE
 );
 
+-- 9. User Social Links
 CREATE TABLE UserSocialLinks (
     UserID INT,
     SocialLinkID INT,
@@ -66,7 +73,7 @@ CREATE TABLE UserSocialLinks (
     FOREIGN KEY (SocialLinkID) REFERENCES SocialLinks(SocialLinkID)
 );
 
--- 5. EDUCATIONS
+-- 10. Education
 CREATE TABLE Educations (
     EducationID INT PRIMARY KEY AUTO_INCREMENT,
     Degree VARCHAR(100),
@@ -75,6 +82,7 @@ CREATE TABLE Educations (
     Description TEXT
 );
 
+-- 11. User Education
 CREATE TABLE UserEducations (
     UserID INT,
     EducationID INT,
@@ -83,7 +91,7 @@ CREATE TABLE UserEducations (
     FOREIGN KEY (EducationID) REFERENCES Educations(EducationID)
 );
 
--- 6. EXPERIENCE
+-- 12. Experiences
 CREATE TABLE Experiences (
     ExperienceID INT PRIMARY KEY AUTO_INCREMENT,
     Organization VARCHAR(150),
@@ -92,6 +100,7 @@ CREATE TABLE Experiences (
     Description TEXT
 );
 
+-- 13. User Experiences
 CREATE TABLE UserExperiences (
     UserID INT,
     ExperienceID INT,
@@ -100,7 +109,7 @@ CREATE TABLE UserExperiences (
     FOREIGN KEY (ExperienceID) REFERENCES Experiences(ExperienceID)
 );
 
--- 7. CERTIFICATIONS
+-- 14. Certifications
 CREATE TABLE Certifications (
     CertificationID INT PRIMARY KEY AUTO_INCREMENT,
     Title VARCHAR(150),
@@ -111,6 +120,8 @@ CREATE TABLE Certifications (
     Description TEXT
 );
 
+
+-- 15. User Certifications
 CREATE TABLE UserCertifications (
     UserID INT,
     CertificationID INT,
@@ -119,7 +130,7 @@ CREATE TABLE UserCertifications (
     FOREIGN KEY (CertificationID) REFERENCES Certifications(CertificationID)
 );
 
--- 8. COURSES AND MODULES
+-- 16. Courses
 CREATE TABLE Courses (
     CourseID INT PRIMARY KEY AUTO_INCREMENT,
     Title VARCHAR(255),
@@ -130,6 +141,7 @@ CREATE TABLE Courses (
     FOREIGN KEY (TeacherID) REFERENCES Users(UserID)
 );
 
+-- 17. Modules
 CREATE TABLE Modules (
     ModuleID INT PRIMARY KEY AUTO_INCREMENT,
     CourseID INT,
@@ -138,6 +150,8 @@ CREATE TABLE Modules (
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
 
+
+-- 18. Videos
 CREATE TABLE Videos (
     VideoID INT PRIMARY KEY AUTO_INCREMENT,
     ModuleID INT,
@@ -147,6 +161,8 @@ CREATE TABLE Videos (
     FOREIGN KEY (ModuleID) REFERENCES Modules(ModuleID)
 );
 
+
+-- 19. Live Classes
 CREATE TABLE LiveClasses (
     LiveClassID INT PRIMARY KEY AUTO_INCREMENT,
     ModuleID INT,
@@ -157,7 +173,7 @@ CREATE TABLE LiveClasses (
     FOREIGN KEY (ModuleID) REFERENCES Modules(ModuleID)
 );
 
--- 9. SUBSCRIPTIONS AND ENROLLMENTS
+-- 20. Subscriptions
 CREATE TABLE Subscriptions (
     SubscriptionID INT PRIMARY KEY AUTO_INCREMENT,
     TeacherID INT,
@@ -168,6 +184,7 @@ CREATE TABLE Subscriptions (
     FOREIGN KEY (TeacherID) REFERENCES Users(UserID)
 );
 
+-- 21. Enrollments
 CREATE TABLE Enrollments (
     EnrollmentID INT PRIMARY KEY AUTO_INCREMENT,
     StudentID INT,
@@ -178,7 +195,7 @@ CREATE TABLE Enrollments (
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
 
--- 10. CHAT AND CONNECTIONS
+-- 22. Connections
 CREATE TABLE Connections (
     ConnectionID INT PRIMARY KEY AUTO_INCREMENT,
     SenderID INT,
@@ -189,6 +206,7 @@ CREATE TABLE Connections (
     FOREIGN KEY (ReceiverID) REFERENCES Users(UserID)
 );
 
+-- 23. Messages
 CREATE TABLE Messages (
     MessageID INT PRIMARY KEY AUTO_INCREMENT,
     ConnectionID INT,
@@ -199,7 +217,7 @@ CREATE TABLE Messages (
     FOREIGN KEY (SenderID) REFERENCES Users(UserID)
 );
 
--- 11. RATINGS
+-- 24. Ratings
 CREATE TABLE Ratings (
     RatingID INT PRIMARY KEY AUTO_INCREMENT,
     CourseID INT,
@@ -211,7 +229,8 @@ CREATE TABLE Ratings (
     FOREIGN KEY (StudentID) REFERENCES Users(UserID)
 );
 
--- 12. LIVE CLASS HISTORY
+
+-- 25. Student Live Class History
 CREATE TABLE StudentLiveClassHistory (
     HistoryID INT PRIMARY KEY AUTO_INCREMENT,
     StudentID INT,
@@ -221,7 +240,8 @@ CREATE TABLE StudentLiveClassHistory (
     FOREIGN KEY (LiveClassID) REFERENCES LiveClasses(LiveClassID)
 );
 
--- 13. VIDEO WATCH HISTORY
+
+-- 26. Student Video Watch History
 CREATE TABLE StudentVideoWatchHistory (
     HistoryID INT PRIMARY KEY AUTO_INCREMENT,
     StudentID INT,
@@ -231,7 +251,7 @@ CREATE TABLE StudentVideoWatchHistory (
     FOREIGN KEY (VideoID) REFERENCES Videos(VideoID)
 );
 
--- 14. NOTIFICATIONS
+-- 27. Notifications
 CREATE TABLE Notifications (
     NotificationID INT PRIMARY KEY AUTO_INCREMENT,
     UserID INT,
@@ -241,7 +261,7 @@ CREATE TABLE Notifications (
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
 );
 
--- 15. SCHEDULED NOTIFICATIONS
+-- 28.Scheduled Notifications
 CREATE TABLE ScheduledNotifications (
     ScheduledID INT PRIMARY KEY AUTO_INCREMENT,
     UserID INT,
@@ -251,3 +271,5 @@ CREATE TABLE ScheduledNotifications (
     FOREIGN KEY (UserID) REFERENCES Users(UserID),
     FOREIGN KEY (LiveClassID) REFERENCES LiveClasses(LiveClassID)
 );
+
+

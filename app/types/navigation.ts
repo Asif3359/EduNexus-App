@@ -8,7 +8,7 @@ type RootStackParamList = {
         videoTitle: string;
         moduleName: string;
     };
-    PaymentScreen: {
+    paymentScreen: {
         courseId: string;
         courseTitle: string;
         courseImage: string;

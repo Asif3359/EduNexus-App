@@ -13,11 +13,11 @@ export default function BottomNavigationBar() {
 
     return (
         <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-around rounded-t-3xl bg-gray-100 py-6">
-            <TouchableOpacity onPress={() => handlePress('/')}>
+            <TouchableOpacity onPress={() => handlePress('/user')}>
                 <FontAwesome
                     name="home"
                     size={28}
-                    color={pathname === '/' ? '#9333ea' : '#000'}
+                    color={pathname === '/user' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress('/user/cource')}>
