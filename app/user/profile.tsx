@@ -7,13 +7,13 @@ import {
     TouchableOpacity,
     Alert,
     SafeAreaView,
+    Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import studentsData from '@/assets/data/students.json';
 import BottomNavigationBar from '../components/BottomNavigationBar';
-import { useRouter } from 'expo-router'; // for navigation
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import Constants from 'expo-constants';
 
 export default function ProfileScreen() {
@@ -24,59 +24,71 @@ export default function ProfileScreen() {
 
     useEffect(() => {
         const fetchStudent = async () => {
-            const email = await AsyncStorage.getItem('userEmail');
-            const token = await AsyncStorage.getItem('userToken');
-            // console.log('Token from AsyncStorage:', token);
-            if (email) {
-                const matchedStudent = studentsData.find(
-                    s => s.email === email
+            try {
+                const userId = await AsyncStorage.getItem('userId');
+                if (!userId) {
+                    Alert.alert('Error', 'Missing user ID.');
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await axios.get(
+                    `${apiUrl}/user/profile/${userId}`,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            Location: 'Khulna',
+                        },
+                    }
                 );
-                setStudent(matchedStudent);
+
+                if (response.data.success) {
+                    setStudent(response.data.data);
+                } else {
+                    Alert.alert(
+                        'Error',
+                        response.data.message || 'Failed to fetch profile.'
+                    );
+                }
+            } catch (error) {
+                console.error('Profile fetch error:', error);
+                Alert.alert(
+                    'Error',
+                    'An error occurred while fetching the profile.'
+                );
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
         };
+
         fetchStudent();
     }, []);
 
     const handleLogout = async () => {
         Alert.alert('Confirm Logout', 'Are you sure you want to logout?', [
-            {
-                text: 'Cancel',
-                style: 'cancel',
-            },
+            { text: 'Cancel', style: 'cancel' },
             {
                 text: 'Logout',
                 style: 'destructive',
                 onPress: async () => {
                     try {
-                        const token = await AsyncStorage.getItem('userToken');
-
-                        if (!token) {
-                            console.warn('No token found.');
-                            return;
-                        }
-
                         await AsyncStorage.clear();
                         await AsyncStorage.setItem('isFirstTime', 'false');
-                        console.log('Logout successful');
                         router.replace('/login');
-                    } catch (error: unknown) {
-                        let errorMessage = 'Logout failed';
-                        console.log('Logout error:', error);
-
-                        if (axios.isAxiosError(error)) {
-                            errorMessage =
-                                error.response?.data?.message || error.message;
-                        } else if (error instanceof Error) {
-                            errorMessage = error.message;
-                        }
-
-                        console.error('Logout failed:', errorMessage);
-                        Alert.alert('Logout Failed', errorMessage);
+                    } catch (error) {
+                        Alert.alert(
+                            'Logout Failed',
+                            'Failed to logout properly.'
+                        );
                     }
                 },
             },
         ]);
+    };
+
+    const handleSetupProfile = () => {
+        router.push('/user/studentProfilesetup');
     };
 
     if (loading) {
@@ -100,9 +112,14 @@ export default function ProfileScreen() {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="p-4">
+                {/* Profile Image and Basic Info */}
                 <View className="mb-4 items-center">
                     <Image
-                        source={{ uri: student.image }}
+                        source={{
+                            uri:
+                                student.image ||
+                                'https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg',
+                        }}
                         className="h-24 w-24 rounded-full"
                     />
                     <Text className="mt-2 text-xl font-bold text-gray-800">
@@ -112,35 +129,108 @@ export default function ProfileScreen() {
                     <Text className="text-gray-500">{student.mobile}</Text>
                 </View>
 
-                <Text className="mb-2 text-gray-600">{student.bio}</Text>
-                <Text className="mb-1 text-sm text-gray-700">
-                    Institution: {student.institution}
-                </Text>
-                <Text className="mb-4 text-sm text-gray-700">
-                    Department: {student.department}, Semester:{' '}
-                    {student.semester}
-                </Text>
+                {/* Bio */}
+                {student.bio && (
+                    <Text className="mb-4 text-center text-gray-600">
+                        {student.bio}
+                    </Text>
+                )}
 
-                <Text className="mb-2 text-lg font-semibold text-gray-800">
-                    Enrolled Courses
-                </Text>
-                {student.enrolledCourses.map((course: any) => (
-                    <View
-                        key={course.courseId}
-                        className="mb-2 rounded-lg bg-gray-100 p-3"
-                    >
-                        <Text className="font-semibold text-gray-800">
-                            {course.title}
+                {/* Education */}
+                {student.educations?.length > 0 && (
+                    <View className="mb-4">
+                        <Text className="mb-1 text-lg font-semibold text-gray-800">
+                            Education
                         </Text>
-                        <Text className="text-sm text-gray-500">
-                            Progress: {course.progress}%
-                        </Text>
-                        <Text className="text-xs text-gray-400">
-                            Enrolled on: {course.enrolledDate}
-                        </Text>
+                        {student.educations.map((edu: any, index: number) => (
+                            <View
+                                key={index}
+                                className="mb-2 rounded-md bg-gray-100 p-3"
+                            >
+                                <Text className="font-semibold text-gray-700">
+                                    {edu.degree}
+                                </Text>
+                                <Text className="text-sm text-gray-500">
+                                    {edu.institution}
+                                </Text>
+                                <Text className="text-xs text-gray-400">
+                                    Year: {edu.year}
+                                </Text>
+                            </View>
+                        ))}
                     </View>
-                ))}
+                )}
 
+                {/* Skills */}
+                {student.skills?.length > 0 && (
+                    <View className="mb-4">
+                        <Text className="mb-1 text-lg font-semibold text-gray-800">
+                            Skills
+                        </Text>
+                        <View className="flex-row flex-wrap gap-2">
+                            {student.skills.map((skill: any, index: number) => (
+                                <Text
+                                    key={index}
+                                    className="rounded-full bg-purple-200 px-3 py-1 text-sm text-purple-800"
+                                >
+                                    {skill.skill_name}
+                                </Text>
+                            ))}
+                        </View>
+                    </View>
+                )}
+
+                {/* Interests */}
+                {student.interests?.length > 0 && (
+                    <View className="mb-4">
+                        <Text className="mb-1 text-lg font-semibold text-gray-800">
+                            Interests
+                        </Text>
+                        <View className="flex-row flex-wrap gap-2">
+                            {student.interests.map(
+                                (interest: any, index: number) => (
+                                    <Text
+                                        key={index}
+                                        className="rounded-full bg-green-200 px-3 py-1 text-sm text-green-800"
+                                    >
+                                        {interest.interest_name}
+                                    </Text>
+                                )
+                            )}
+                        </View>
+                    </View>
+                )}
+
+                {/* Social Links */}
+                {student.social_links?.length > 0 && (
+                    <View className="mb-4">
+                        <Text className="mb-1 text-lg font-semibold text-gray-800">
+                            Social Links
+                        </Text>
+                        {student.social_links.map(
+                            (link: any, index: number) => (
+                                <TouchableOpacity
+                                    key={index}
+                                    onPress={() =>
+                                        Linking.openURL(link.social_link)
+                                    }
+                                >
+                                    <Text className="mb-1 text-blue-600 underline">
+                                        {link.social_link}
+                                    </Text>
+                                </TouchableOpacity>
+                            )
+                        )}
+                    </View>
+                )}
+                <TouchableOpacity
+                    className="mt-6 items-center rounded-lg bg-blue-500 py-3"
+                    onPress={handleSetupProfile}
+                >
+                    <Text className="font-semibold text-white">
+                        setup Profile
+                    </Text>
+                </TouchableOpacity>
                 {/* Logout Button */}
                 <TouchableOpacity
                     className="mt-6 items-center rounded-lg bg-red-500 py-3"

@@ -98,6 +98,10 @@ export default function RootLayout() {
                     name="paymentScreen"
                     options={{ title: 'Payment', headerShown: true }}
                 />
+                <Stack.Screen
+                    name="user/studentProfilesetup"
+                    options={{ title: 'Profile Setup', headerShown: true }}
+                />
 
                 {/* Teacher */}
                 <Stack.Screen

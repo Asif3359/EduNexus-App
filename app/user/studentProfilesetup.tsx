@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -6,13 +6,18 @@ import {
     TouchableOpacity,
     ScrollView,
     SafeAreaView,
+    Alert,
+    Image,
+    ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import axios from 'axios';
+import ProfilePictureUploader from '../components/ProfilePictureUploader';
 
-export default function ProfileSetupScreen() {
+function studentProfilesetup() {
     const router = useRouter();
 
     const [skills, setSkills] = useState(['']);
@@ -21,8 +26,105 @@ export default function ProfileSetupScreen() {
     const [educationList, setEducationList] = useState([
         { degree: '', institution: '', year: '', description: '' },
     ]);
+    const [student, setStudent] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const [profilePicture, setProfilePicture] = useState('');
+    const [profilePictureUrl, setProfilePictureUrl] = useState<string | null>(
+        null
+    );
+    const [mobile, setMobile] = useState('');
+    const [bio, setBio] = useState('');
 
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
+
+    useEffect(() => {
+        const fetchStudent = async () => {
+            try {
+                const userId = await AsyncStorage.getItem('userId');
+                if (!userId) {
+                    Alert.alert('Error', 'Missing user ID.');
+                    setLoading(false);
+                    return;
+                }
+
+                const response = await axios.get(
+                    `${apiUrl}/user/profile/${userId}`,
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            Location: 'Khulna',
+                        },
+                    }
+                );
+
+                if (response.data.success) {
+                    // Set states using map
+                    // console.log('Student bio:', response.data.data.student_profile.bio);
+                    // console.log('Student Mobile:', response.data.data.student_profile.mobile);
+                    // console.log('Student Profile:', response.data.data.student_profile.profile_picture);
+                    setStudent(response.data.data);
+
+                    setSkills(
+                        response.data.data.skills.map(
+                            (skill: { skill_name: any }) => skill.skill_name
+                        )
+                    );
+
+                    setInterests(
+                        response.data.data.interests.map(
+                            (interest: { interest_name: any }) =>
+                                interest.interest_name
+                        )
+                    );
+
+                    setSocialLinks(
+                        response.data.data.social_links.map(
+                            (link: { social_link: any }) => link.social_link
+                        )
+                    );
+
+                    setEducationList(
+                        response.data.data.educations.map(
+                            (edu: {
+                                degree: any;
+                                institution: any;
+                                year: any;
+                                description: any;
+                            }) => ({
+                                degree: edu.degree || '',
+                                institution: edu.institution || '',
+                                year: edu.year + '' || '',
+                                description: edu.description || '',
+                            })
+                        )
+                    );
+
+                    setProfilePicture(
+                        response.data.data.student_profile.profile_picture || ''
+                    );
+                    setMobile(response.data.data.student_profile.mobile || '');
+                    setBio(response.data.data.student_profile.bio || '');
+                } else {
+                    Alert.alert(
+                        'Error',
+                        response.data.message || 'Failed to fetch profile.'
+                    );
+                }
+            } catch (error) {
+                console.error('Profile fetch error:', error);
+                Alert.alert(
+                    'Error',
+                    'An error occurred while fetching the profile.'
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchStudent();
+    }, []);
 
     const handleSkillChange = (text: string, index: number) => {
         const updated = [...skills];
@@ -55,7 +157,31 @@ export default function ProfileSetupScreen() {
 
     // Handle form submission
     const handleSubmit = async () => {
-        // Validate first skill, interest, link, and education fields
+        // console.log('Profile Picture:', profilePictureUrl);
+        // console.log('Mobile:', mobile);
+        // console.log('Bio:', bio);
+
+        if (!profilePictureUrl) {
+            alert('Profile picture URL is required.');
+            return;
+        }
+
+        if (!mobile.trim()) {
+            alert('Mobile number is required.');
+            return;
+        }
+        if (!bio.trim()) {
+            alert('Bio is required.');
+            return;
+        }
+        if (mobile.length < 11) {
+            alert('Mobile number must be 11 digits.');
+            return;
+        }
+        if (!/^\d+$/.test(mobile)) {
+            alert('Mobile number must be numeric.');
+            return;
+        }
         if (!skills[0].trim()) {
             alert('Skill is required.');
             return;
@@ -97,6 +223,9 @@ export default function ProfileSetupScreen() {
             userName,
             userEmail,
             userRole,
+            profile_picture: profilePictureUrl,
+            mobile,
+            bio,
             skills,
             interests,
             socialLinks,
@@ -110,7 +239,7 @@ export default function ProfileSetupScreen() {
         console.log('Token:', token);
 
         try {
-            const response = await fetch(`${apiUrl}/save-profile`, {
+            const response = await fetch(`${apiUrl}/update-profile`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -159,13 +288,58 @@ export default function ProfileSetupScreen() {
         }
     };
 
+    const handleImageSelected = (imageUri: string) => {
+        setProfilePicture(imageUri); // Update the state with the selected image URI
+    };
+
+    const handleUploadSuccess = (url: string) => {
+        setProfilePictureUrl(url); // Update the state with the uploaded image URL
+    };
+    const handleUploadError = (error: any) => {
+        console.error('Upload error:', error);
+        Alert.alert('Error', 'Failed to upload image.');
+    };
+
     return (
-        <SafeAreaView className="mb-20 flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white">
             {/* Title */}
             <Text className="bg-purple-700 py-6 text-center text-2xl font-bold text-white">
                 Setup your profile
             </Text>
             <ScrollView className="mt-2 px-4 py-2">
+                {/* Profile Picture */}
+
+                <ProfilePictureUploader
+                    key={Date.now()}
+                    onImageSelected={handleImageSelected}
+                    onUploadSuccess={handleUploadSuccess}
+                    onUploadError={handleUploadError}
+                    initialImageUrl={profilePicture}
+                />
+
+                {/* {profilePictureUrl && (
+                    <Text>{profilePictureUrl}</Text>
+                )} */}
+
+                {/* Mobile Number */}
+                <Text className="mb-1 text-xl font-semibold">Mobile</Text>
+                <TextInput
+                    className="mb-4 rounded bg-gray-200 px-3 py-2"
+                    placeholder="e.g. 017xxxxxxxx"
+                    keyboardType="phone-pad"
+                    value={mobile}
+                    onChangeText={setMobile}
+                />
+
+                {/* Bio */}
+                <Text className="mb-1 text-xl font-semibold">Bio</Text>
+                <TextInput
+                    className="mb-4 h-24 rounded bg-gray-200 px-3 py-2"
+                    multiline
+                    placeholder="Tell us about yourself..."
+                    value={bio}
+                    onChangeText={setBio}
+                />
                 {/* Skills */}
                 <Text className="mb-1 text-xl font-semibold">Skills</Text>
                 {skills.map((skill, index) => (
@@ -319,3 +493,5 @@ export default function ProfileSetupScreen() {
         </SafeAreaView>
     );
 }
+
+export default studentProfilesetup;
