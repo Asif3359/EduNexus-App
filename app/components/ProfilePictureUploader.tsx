@@ -27,7 +27,7 @@ export default function ProfilePictureUploader({
 
     useEffect(() => {
         if (initialImageUrl) {
-            console.log('Initial image URL:', initialImageUrl);
+            // console.log('Initial image URL:', initialImageUrl);
             setImage(initialImageUrl);
         }
     }, [initialImageUrl]);

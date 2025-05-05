@@ -17,8 +17,8 @@ import Constants from 'expo-constants';
 
 export default function LoginScreen() {
     const router = useRouter();
-    const [email, setEmail] = useState('ra@gmail.com');
-    const [password, setPassword] = useState('12345678');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [remember, setRemember] = useState(true); // State for Remember me
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
@@ -55,7 +55,7 @@ export default function LoginScreen() {
                     );
                     await AsyncStorage.setItem('userName', data.user.name);
                     await AsyncStorage.setItem('userEmail', data.user.email);
-                    await AsyncStorage.setItem('userRole', data.user.role);
+                    await AsyncStorage.setItem('role', data.user.role);
                     await AsyncStorage.setItem('isFirstTime', 'false');
                     await AsyncStorage.setItem('userLoggedIn', 'true');
 
@@ -70,15 +70,14 @@ export default function LoginScreen() {
                     //     router.replace('/admin');
                     // }
 
-                    router.replace('/profileSetupScreen');
-
-                    // const userRole = await AsyncStorage.getItem('userRole');
-                    // if (userRole === 'student') {
-                    //     router.replace('/user');
-                    // }
-                    // if (userRole === 'teacher') {
-                    //     router.replace('/teacher');
-                    // }
+                    const userRole = await AsyncStorage.getItem('role');
+                    if (userRole === 'admin') {
+                        router.push('/');
+                    } else if (userRole === 'student') {
+                        router.push('/user');
+                    } else if (userRole === 'teacher') {
+                        router.push('/teacher');
+                    }
                 } else {
                     setError(data.message || 'Login failed');
                 }

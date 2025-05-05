@@ -8,13 +8,22 @@ import {
 } from 'react-native';
 // import Svg, { Path } from "react-native-svg";
 import { useRouter } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SuccessScreen() {
     const router = useRouter();
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            router.replace('/profileSetupScreen');
+        const timer = setTimeout(async () => {
+            const userRole = await AsyncStorage.getItem('role');
+            console.log('User role:', userRole);
+            if (userRole === 'admin') {
+                router.push('/');
+            } else if (userRole === 'student') {
+                router.push('/user/studentProfilesetup');
+            } else if (userRole === 'teacher') {
+                router.push('/teacher/teacherProfilesetup');
+            }
         }, 3000); // Show for 3 seconds
 
         return () => clearTimeout(timer);

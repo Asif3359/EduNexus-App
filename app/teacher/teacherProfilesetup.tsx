@@ -17,7 +17,7 @@ import Constants from 'expo-constants';
 import axios from 'axios';
 import ProfilePictureUploader from '../components/ProfilePictureUploader';
 
-function studentProfilesetup() {
+function teacherProfilesetup() {
     const router = useRouter();
 
     const [skills, setSkills] = useState(['']);
@@ -49,7 +49,7 @@ function studentProfilesetup() {
                 }
 
                 const response = await axios.get(
-                    `${apiUrl}/student/profile/${userId}`,
+                    `${apiUrl}/user/profile/${userId}`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -240,7 +240,7 @@ function studentProfilesetup() {
         console.log('Token:', token);
 
         try {
-            const response = await fetch(`${apiUrl}/student/profile/update`, {
+            const response = await fetch(`${apiUrl}/update-profile`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ function studentProfilesetup() {
                 ]);
 
                 // Navigate based on role
-                const userRole = await AsyncStorage.getItem('role');
+                const userRole = await AsyncStorage.getItem('userRole');
                 if (userRole === 'student') {
                     router.replace('/user');
                 }
@@ -495,4 +495,4 @@ function studentProfilesetup() {
     );
 }
 
-export default studentProfilesetup;
+export default teacherProfilesetup;

@@ -33,7 +33,7 @@ export default function ProfileScreen() {
                 }
 
                 const response = await axios.get(
-                    `${apiUrl}/user/profile/${userId}`,
+                    `${apiUrl}/student/profile/${userId}`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -117,22 +117,25 @@ export default function ProfileScreen() {
                     <Image
                         source={{
                             uri:
-                                student.image ||
+                                student.student_profile?.profile_picture ||
                                 'https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg',
                         }}
-                        className="h-24 w-24 rounded-full"
+                        className="h-24 w-24 rounded-full border-2 border-gray-300 bg-gray-500"
+                        alt="Profile Picture"
                     />
                     <Text className="mt-2 text-xl font-bold text-gray-800">
                         {student.name}
                     </Text>
                     <Text className="text-gray-500">{student.email}</Text>
-                    <Text className="text-gray-500">{student.mobile}</Text>
+                    <Text className="text-gray-500">
+                        {student.student_profile?.mobile}
+                    </Text>
                 </View>
 
                 {/* Bio */}
-                {student.bio && (
-                    <Text className="mb-4 text-center text-gray-600">
-                        {student.bio}
+                {student.student_profile?.bio && (
+                    <Text className="mb-4 text-gray-600">
+                        {student.student_profile.bio}
                     </Text>
                 )}
 
