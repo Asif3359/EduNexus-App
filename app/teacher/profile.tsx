@@ -15,6 +15,7 @@ import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Constants from 'expo-constants';
+import BottomNavBarTeacher from '../components/BottomNavBarTeacher';
 
 export default function ProfileScreen() {
     const [student, setStudent] = useState<any>(null);
@@ -33,7 +34,7 @@ export default function ProfileScreen() {
                 }
 
                 const response = await axios.get(
-                    `${apiUrl}/student/profile/${userId}`,
+                    `${apiUrl}/teacher/profile/${userId}`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -88,7 +89,7 @@ export default function ProfileScreen() {
     };
 
     const handleSetupProfile = () => {
-        router.push('/user/studentProfilesetup');
+        router.push('/teacher/teacherProfilesetup');
     };
 
     if (loading) {
@@ -109,41 +110,6 @@ export default function ProfileScreen() {
         );
     }
 
-    const handleApplyForTeacher = async () => {
-        router.push('/user/applyForTeacher');
-
-        // const userId = await AsyncStorage.getItem('userId');
-        // if (!userId) {
-        //     Alert.alert('Error', 'Missing user ID.');
-        //     return;
-        // }
-
-        // try {
-        //     const response = await axios.post(
-        //         `${apiUrl}/student/apply-for-teacher/${userId}`,
-        //         {},
-        //         {
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 Accept: 'application/json',
-        //             },
-        //         }
-        //     );
-
-        //     if (response.data.success) {
-        //         Alert.alert('Success', response.data.message);
-        //     } else {
-        //         Alert.alert('Error', response.data.message);
-        //     }
-        // } catch (error) {
-        //     console.error('Apply for teacher error:', error);
-        //     Alert.alert(
-        //         'Error',
-        //         'An error occurred while applying for teacher.'
-        //     );
-        // }
-    };
-
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="p-4">
@@ -152,7 +118,7 @@ export default function ProfileScreen() {
                     <Image
                         source={{
                             uri:
-                                student.student_profile?.profile_picture ||
+                                student.teacher_profile?.profile_picture ||
                                 'https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg',
                         }}
                         className="h-24 w-24 rounded-full border-2 border-gray-300 bg-gray-500"
@@ -163,14 +129,14 @@ export default function ProfileScreen() {
                     </Text>
                     <Text className="text-gray-500">{student.email}</Text>
                     <Text className="text-gray-500">
-                        {student.student_profile?.mobile}
+                        {student.teacher_profile?.mobile}
                     </Text>
                 </View>
 
                 {/* Bio */}
-                {student.student_profile?.bio && (
+                {student.teacher_profile?.bio && (
                     <Text className="mb-4 text-gray-600">
-                        {student.student_profile.bio}
+                        {student.teacher_profile.bio}
                     </Text>
                 )}
 
@@ -269,14 +235,6 @@ export default function ProfileScreen() {
                         Setup Profile
                     </Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    className="mt-6 items-center rounded-lg bg-green-500 py-3"
-                    onPress={handleApplyForTeacher}
-                >
-                    <Text className="font-semibold text-white">
-                        Apply for teacher
-                    </Text>
-                </TouchableOpacity>
                 {/* Logout Button */}
                 <TouchableOpacity
                     className="mt-6 items-center rounded-lg bg-red-500 py-3"
@@ -286,7 +244,7 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
             </ScrollView>
 
-            <BottomNavigationBar />
+            <BottomNavBarTeacher />
         </SafeAreaView>
     );
 }

@@ -51,7 +51,6 @@ export default function ProfilePictureUploader({
             if (!result.canceled) {
                 const selectedImageUri = result.assets[0].uri;
                 setImage(selectedImageUri);
-                onImageSelected(selectedImageUri);
                 await uploadToCloudinary(selectedImageUri);
             }
         } catch (error) {
@@ -103,6 +102,8 @@ export default function ProfilePictureUploader({
             if (data.secure_url) {
                 setImage(data.secure_url); // update UI with uploaded image
                 onUploadSuccess?.(data.secure_url);
+                onImageSelected?.(data.secure_url);
+                // console.log('Image uploaded successfully:', data.secure_url);
             } else {
                 throw new Error('Upload succeeded but no URL returned');
             }
@@ -118,8 +119,6 @@ export default function ProfilePictureUploader({
 
     return (
         <View className="items-center p-4">
-            <Text className="mb-4 text-xl font-bold">Profile Picture</Text>
-
             <View className="mb-4 h-40 w-40 items-center justify-center overflow-hidden rounded-full bg-gray-200">
                 {uploading ? (
                     <ActivityIndicator size="large" color="#0000ff" />

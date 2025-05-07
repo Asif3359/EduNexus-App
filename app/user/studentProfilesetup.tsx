@@ -158,10 +158,6 @@ function studentProfilesetup() {
 
     // Handle form submission
     const handleSubmit = async () => {
-        // console.log('Profile Picture:', profilePictureUrl);
-        // console.log('Mobile:', mobile);
-        // console.log('Bio:', bio);
-
         if (!profilePicture) {
             alert('Profile picture URL is required.');
             return;
@@ -212,7 +208,7 @@ function studentProfilesetup() {
         const user_id = await AsyncStorage.getItem('userId');
         const userName = await AsyncStorage.getItem('userName');
         const userEmail = await AsyncStorage.getItem('userEmail');
-        const userRole = await AsyncStorage.getItem('userRole');
+        const userRole = await AsyncStorage.getItem('role');
         console.log('User ID:', user_id);
         console.log('User Name:', userName);
         console.log('User Email:', userEmail);
@@ -291,10 +287,13 @@ function studentProfilesetup() {
 
     const handleImageSelected = (imageUri: string) => {
         setProfilePicture(imageUri); // Update the state with the selected image URI
+        setProfilePictureUrl(imageUri); // Update the state with the selected image URI
+        // console.log('Selected image URI:', imageUri);
     };
 
     const handleUploadSuccess = (url: string) => {
         setProfilePictureUrl(url); // Update the state with the uploaded image URL
+        // console.log('Upload success:', url);
     };
     const handleUploadError = (error: any) => {
         console.error('Upload error:', error);
@@ -307,20 +306,17 @@ function studentProfilesetup() {
             <Text className="bg-purple-700 py-6 text-center text-2xl font-bold text-white">
                 Setup your profile
             </Text>
-            <ScrollView className="mt-2 px-4 py-2">
+            <ScrollView className="mb-20 mt-2 px-4 py-2">
                 {/* Profile Picture */}
-
+                <Text className="mb-4 mt-2 items-start text-xl font-bold">
+                    Profile Picture
+                </Text>
                 <ProfilePictureUploader
-                    key={Date.now()}
                     onImageSelected={handleImageSelected}
                     onUploadSuccess={handleUploadSuccess}
                     onUploadError={handleUploadError}
                     initialImageUrl={profilePicture}
                 />
-
-                {/* {profilePictureUrl && (
-                    <Text>{profilePictureUrl}</Text>
-                )} */}
 
                 {/* Mobile Number */}
                 <Text className="mb-1 text-xl font-semibold">Mobile</Text>

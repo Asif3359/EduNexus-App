@@ -85,7 +85,7 @@ export default function ProfileSetupScreen() {
         const user_id = await AsyncStorage.getItem('userId');
         const userName = await AsyncStorage.getItem('userName');
         const userEmail = await AsyncStorage.getItem('userEmail');
-        const userRole = await AsyncStorage.getItem('userRole');
+        const userRole = await AsyncStorage.getItem('role');
         console.log('User ID:', user_id);
         console.log('User Name:', userName);
         console.log('User Email:', userEmail);
@@ -140,7 +140,7 @@ export default function ProfileSetupScreen() {
                 ]);
 
                 // Navigate based on role
-                const userRole = await AsyncStorage.getItem('userRole');
+                const userRole = await AsyncStorage.getItem('role');
                 if (userRole === 'student') {
                     router.replace('/user');
                 }

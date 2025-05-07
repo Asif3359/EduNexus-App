@@ -102,6 +102,10 @@ export default function RootLayout() {
                     name="user/studentProfilesetup"
                     options={{ title: 'Profile Setup', headerShown: true }}
                 />
+                <Stack.Screen
+                    name="user/applyForTeacher"
+                    options={{ title: 'Apply for teacher', headerShown: true }}
+                />
 
                 {/* Teacher */}
                 <Stack.Screen
@@ -115,6 +119,14 @@ export default function RootLayout() {
                 <Stack.Screen
                     name="teacher/InstructorProfile"
                     options={{ title: 'Profile', headerShown: true }}
+                />
+                <Stack.Screen
+                    name="teacher/profile"
+                    options={{ title: 'Profile', headerShown: false }}
+                />
+                <Stack.Screen
+                    name="teacher/teacherProfilesetup"
+                    options={{ title: 'Profile setup', headerShown: true }}
                 />
             </Stack>
         </SafeAreaView>

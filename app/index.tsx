@@ -50,11 +50,25 @@ export default function HomeScreen() {
     }, []);
 
     useEffect(() => {
-        if (isFirstTime === true) {
-            router.replace('/onboarding');
-        } else if (userExists === false) {
-            router.replace('/login');
-        }
+        const checkUserRoleAndRedirect = async () => {
+            if (userExists === true) {
+                const userRole = await AsyncStorage.getItem('role');
+                console.log('User role:', userRole);
+                if (userRole === 'admin') {
+                    router.replace('/');
+                } else if (userRole === 'student') {
+                    router.replace('/user');
+                } else if (userRole === 'teacher') {
+                    router.replace('/teacher');
+                }
+            } else if (isFirstTime === true) {
+                router.replace('/onboarding');
+            } else if (userExists === false) {
+                router.replace('/login');
+            }
+        };
+
+        checkUserRoleAndRedirect();
     }, [isFirstTime, router, userExists]);
 
     // Default user interest from course data
@@ -87,7 +101,7 @@ export default function HomeScreen() {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="mb-20 flex-1 px-4 pt-4">
-                <Text className="text-lg text-gray-500">Hi, There</Text>
+                <Text className="text-lg text-gray-500">Hi, There as</Text>
                 <Text className="mt-1 text-sm text-gray-400">
                     What would you like to learn today? Search below.
                 </Text>

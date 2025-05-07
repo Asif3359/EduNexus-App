@@ -49,7 +49,7 @@ function teacherProfilesetup() {
                 }
 
                 const response = await axios.get(
-                    `${apiUrl}/user/profile/${userId}`,
+                    `${apiUrl}/teacher/profile/${userId}`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -102,11 +102,11 @@ function teacherProfilesetup() {
                     );
 
                     setProfilePicture(
-                        response.data.data.student_profile?.profile_picture ||
+                        response.data.data.teacher_profile?.profile_picture ||
                             ''
                     );
-                    setMobile(response.data.data.student_profile?.mobile || '');
-                    setBio(response.data.data.student_profile?.bio || '');
+                    setMobile(response.data.data.teacher_profile?.mobile || '');
+                    setBio(response.data.data.teacher_profile?.bio || '');
                 } else {
                     Alert.alert(
                         'Error',
@@ -212,7 +212,7 @@ function teacherProfilesetup() {
         const user_id = await AsyncStorage.getItem('userId');
         const userName = await AsyncStorage.getItem('userName');
         const userEmail = await AsyncStorage.getItem('userEmail');
-        const userRole = await AsyncStorage.getItem('userRole');
+        const userRole = await AsyncStorage.getItem('role');
         console.log('User ID:', user_id);
         console.log('User Name:', userName);
         console.log('User Email:', userEmail);
@@ -240,7 +240,7 @@ function teacherProfilesetup() {
         console.log('Token:', token);
 
         try {
-            const response = await fetch(`${apiUrl}/update-profile`, {
+            const response = await fetch(`${apiUrl}/teacher/profile/update`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -270,7 +270,7 @@ function teacherProfilesetup() {
                 ]);
 
                 // Navigate based on role
-                const userRole = await AsyncStorage.getItem('userRole');
+                const userRole = await AsyncStorage.getItem('role');
                 if (userRole === 'student') {
                     router.replace('/user');
                 }

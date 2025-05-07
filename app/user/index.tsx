@@ -13,8 +13,7 @@ import { WebView } from 'react-native-webview';
 import courseData from '@/assets/data/courseDetails.json';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNavigationBar from '../components/BottomNavigationBar';
-
-export default function UserHome() {
+function UserHome() {
     const router = useRouter();
 
     // Default user interest from course data
@@ -268,3 +267,5 @@ export default function UserHome() {
         </SafeAreaView>
     );
 }
+
+export default UserHome;
