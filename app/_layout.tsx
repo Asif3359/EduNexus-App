@@ -128,6 +128,29 @@ export default function RootLayout() {
                     name="teacher/teacherProfilesetup"
                     options={{ title: 'Profile setup', headerShown: true }}
                 />
+
+                <Stack.Screen
+                    name="teacher/createCourse"
+                    options={{ title: 'New Course', headerShown: true }}
+                />
+                <Stack.Screen
+                    name="teacher/courseList"
+                    options={{ title: 'Course List', headerShown: true }}
+                />
+                <Stack.Screen
+                    name="teacher/schedule"
+                    options={{ title: 'Add Schedule', headerShown: true }}
+                />
+
+                {/* Courses  */}
+                <Stack.Screen
+                    name="course/[id]"
+                    options={{ title: 'Course ', headerShown: true }}
+                />
+                <Stack.Screen
+                    name="manageLessons/[moduleId]"
+                    options={{ title: 'Module  ', headerShown: true }}
+                />
             </Stack>
         </SafeAreaView>
     );

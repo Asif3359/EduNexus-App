@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { FontAwesome, MaterialIcons, Feather } from '@expo/vector-icons';
 
@@ -20,25 +20,38 @@ function BottomNavBarTeacher() {
                     color={pathname === '/teacher' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePress('/teacher/cource')}>
+            <TouchableOpacity
+                onPress={() => handlePress('/teacher/createCourse')}
+            >
                 <MaterialIcons
-                    name="menu-book"
+                    name="add-circle-outline"
                     size={28}
-                    color={pathname === '/cource' ? '#9333ea' : '#000'}
+                    color={
+                        pathname === '/teacher/createCourse'
+                            ? '#9333ea'
+                            : '#000'
+                    }
                 />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => handlePress('/teacher/history')}>
-                <Feather
-                    name="clock"
+            <TouchableOpacity onPress={() => handlePress('/teacher/schedule')}>
+                <MaterialIcons
+                    name="event"
                     size={28}
-                    color={pathname === '/history' ? '#9333ea' : '#000'}
+                    color={pathname === '/schedule' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
+            {/* <TouchableOpacity onPress={() => handlePress('/teacher/history')}>
+                <MaterialIcons
+                    name="history"
+                    size={28}
+                    color={pathname === '/teacher/history' ? '#9333ea' : '#000'}
+                />
+            </TouchableOpacity> */}
             <TouchableOpacity onPress={() => handlePress('/teacher/profile')}>
                 <Feather
                     name="user"
                     size={28}
-                    color={pathname === '/profile' ? '#9333ea' : '#000'}
+                    color={pathname === '/teacher/profile' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
         </View>

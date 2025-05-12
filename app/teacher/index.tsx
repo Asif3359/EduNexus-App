@@ -1,269 +1,325 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import {
     View,
     Text,
-    ActivityIndicator,
     ScrollView,
     TouchableOpacity,
     Image,
+    FlatList,
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { WebView } from 'react-native-webview';
-import courseData from '@/assets/data/courseDetails.json';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import BottomNavigationBar from '../components/BottomNavigationBar';
+import {
+    FontAwesome,
+    MaterialIcons,
+    Feather,
+    Ionicons,
+    AntDesign,
+} from '@expo/vector-icons';
 import BottomNavBarTeacher from '../components/BottomNavBarTeacher';
-function TeacherHome() {
-    const router = useRouter();
+import { router } from 'expo-router';
 
-    // Default user interest from course data
-    const defaultUserInterests = {
-        categories: ['Development'],
-        instructors: ['John Doe'],
+function TeacherHome() {
+    // Sample data - in a real app, this would come from your database/API
+    const courses = [
+        { id: 1, title: 'Advanced React Native', students: 42, modules: 6 },
+        { id: 2, title: 'UI/UX Design Fundamentals', students: 28, modules: 5 },
+        { id: 3, title: 'JavaScript Masterclass', students: 56, modules: 8 },
+    ];
+
+    const upcomingClasses = [
+        {
+            id: 1,
+            title: 'State Management in React',
+            time: 'Today, 3:00 PM',
+            course: 'Advanced React Native',
+        },
+        {
+            id: 2,
+            title: 'Design Principles',
+            time: 'Tomorrow, 10:00 AM',
+            course: 'UI/UX Design Fundamentals',
+        },
+    ];
+
+    const recentStudents = [
+        { id: 1, name: 'Alice Johnson', course: 'JavaScript Masterclass' },
+        { id: 2, name: 'Bob Smith', course: 'UI/UX Design Fundamentals' },
+        { id: 3, name: 'Charlie Brown', course: 'Advanced React Native' },
+    ];
+
+    const stats = {
+        totalStudents: 126,
+        totalCourses: 3,
+        totalEarnings: 2450.5,
+        rating: 4.8,
     };
 
-    // Filter suggested courses based on interest
-    const suggestedCourses = courseData.filter(
-        course =>
-            defaultUserInterests.categories.includes(course.category) ||
-            defaultUserInterests.instructors.includes(course.instructor)
-    );
-
-    // Suggested courses based on interests
-    // const suggestedCourses = courseData.filter(course =>
-    //     userInterests.includes(course.category)
-    // );
-
-    // Top courses based on rating
-    const topRatedCourses = [...courseData]
-        .sort((a, b) => b.rating - a.rating)
-        .slice(0, 5);
-
-    const topSelingCourse = [...courseData]
-        .sort((a, b) => b.sellCount - a.sellCount)
-        .slice(0, 5);
+    const handleCourseList = async () => {
+        router.push('/teacher/courseList');
+    };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
-            <ScrollView className="mb-20 flex-1 px-4 pt-4">
-                <Text className="text-lg text-gray-500">Hi, There Asif </Text>
-                <Text className="mt-1 text-sm text-gray-400">
-                    What would you like to learn today? Search below.
-                </Text>
+        <SafeAreaView className="flex-1 bg-gray-50">
+            <ScrollView className="mb-24 px-4 pt-4">
+                {/* Header with welcome and notifications */}
+                <View className="mb-6 flex-row items-center justify-between">
+                    <View>
+                        <Text className="text-lg text-gray-600">
+                            Welcome back,
+                        </Text>
+                        <Text className="text-2xl font-bold">
+                            Professor Smith
+                        </Text>
+                    </View>
+                    <TouchableOpacity className="rounded-full bg-white p-3 shadow-sm">
+                        <Ionicons
+                            name="notifications-outline"
+                            size={24}
+                            color="#6b7280"
+                        />
+                    </TouchableOpacity>
+                </View>
 
-                {/* Banner */}
-                <View className="mt-4 flex-row items-center justify-center rounded-2xl bg-purple-100 p-4">
-                    <Text className="flex-1 text-lg font-semibold text-purple-700">
-                        Hello there! Welcome to our learning platform. Explore
-                        and learn at your own pace.
-                    </Text>
-                    <Image
-                        source={require('@/assets/images/webIllustration.png')}
-                        className="mt-2 h-32 w-full flex-1"
-                        resizeMode="contain"
+                {/* Quick Stats Cards */}
+                <View className="mb-6 flex-row flex-wrap justify-between">
+                    <View className="mb-4 w-[48%] rounded-xl bg-white p-4 shadow-sm">
+                        <Text className="text-sm text-gray-500">
+                            Total Students
+                        </Text>
+                        <Text className="text-2xl font-bold text-purple-600">
+                            {stats.totalStudents}
+                        </Text>
+                    </View>
+                    <View className="mb-4 w-[48%] rounded-xl bg-white p-4 shadow-sm">
+                        <Text className="text-sm text-gray-500">
+                            Total Courses
+                        </Text>
+                        <Text className="text-2xl font-bold text-blue-600">
+                            {stats.totalCourses}
+                        </Text>
+                    </View>
+                    <View className="w-[48%] rounded-xl bg-white p-4 shadow-sm">
+                        <Text className="text-sm text-gray-500">
+                            Total Earnings
+                        </Text>
+                        <Text className="text-2xl font-bold text-green-600">
+                            ${stats.totalEarnings.toFixed(2)}
+                        </Text>
+                    </View>
+                    <View className="w-[48%] rounded-xl bg-white p-4 shadow-sm">
+                        <Text className="text-sm text-gray-500">
+                            Your Rating
+                        </Text>
+                        <View className="flex-row items-center">
+                            <Text className="text-2xl font-bold text-yellow-600">
+                                {stats.rating}
+                            </Text>
+                            <AntDesign
+                                name="star"
+                                size={20}
+                                color="#d97706"
+                                className="ml-1"
+                            />
+                        </View>
+                    </View>
+                </View>
+
+                {/* Your Courses Section */}
+                <View className="mb-6">
+                    <View className="mb-3 flex-row items-center justify-between">
+                        <Text className="text-xl font-bold">Your Courses</Text>
+                        <TouchableOpacity>
+                            <Text className="text-purple-600">See All</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={courses}
+                        keyExtractor={item => item.id.toString()}
+                        renderItem={({ item }) => (
+                            <TouchableOpacity className="mr-4 w-64 rounded-xl bg-white p-4 shadow-sm">
+                                <View className="mb-3 flex h-32 items-center justify-center rounded-lg bg-purple-100">
+                                    <Ionicons
+                                        name="book-outline"
+                                        size={48}
+                                        color="#9333ea"
+                                    />
+                                </View>
+                                <Text className="mb-1 text-lg font-bold">
+                                    {item.title}
+                                </Text>
+                                <View className="flex-row justify-between">
+                                    <Text className="text-gray-500">
+                                        {item.students} students
+                                    </Text>
+                                    <Text className="text-gray-500">
+                                        {item.modules} modules
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        )}
                     />
                 </View>
 
-                {/* Categories */}
-                {/* <View className="mt-6">
-                    <Text className="mb-2 text-base font-semibold">Categories</Text>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                        {homeData.categories.map((category, idx) => (
+                {/* Upcoming Live Classes */}
+                <View className="mb-6">
+                    <View className="mb-3 flex-row items-center justify-between">
+                        <Text className="text-xl font-bold">
+                            Upcoming Classes
+                        </Text>
+                        <TouchableOpacity>
+                            <Text className="text-purple-600">See All</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View className="rounded-xl bg-white p-4 shadow-sm">
+                        {upcomingClasses.map(classItem => (
                             <TouchableOpacity
-                                key={idx}
-                                className="mr-2 rounded-full bg-gray-200 px-4 py-2"
+                                key={classItem.id}
+                                className="mb-3 border-b border-gray-100 pb-3 last:mb-0 last:border-0 last:pb-0"
                             >
-                                <Text className="text-sm text-gray-700">{category}</Text>
+                                <View className="flex-row items-start">
+                                    <View className="mr-3 rounded-lg bg-purple-100 p-2">
+                                        <Ionicons
+                                            name="videocam-outline"
+                                            size={20}
+                                            color="#9333ea"
+                                        />
+                                    </View>
+                                    <View className="flex-1">
+                                        <Text className="font-bold">
+                                            {classItem.title}
+                                        </Text>
+                                        <Text className="text-sm text-gray-500">
+                                            {classItem.course}
+                                        </Text>
+                                        <View className="mt-1 flex-row items-center">
+                                            <Ionicons
+                                                name="time-outline"
+                                                size={14}
+                                                color="#6b7280"
+                                            />
+                                            <Text className="ml-1 text-sm text-gray-500">
+                                                {classItem.time}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <TouchableOpacity className="p-2">
+                                        <Ionicons
+                                            name="ellipsis-vertical"
+                                            size={16}
+                                            color="#6b7280"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </TouchableOpacity>
                         ))}
-                    </ScrollView>
-                </View> */}
+                    </View>
+                </View>
 
-                {/* Suggestions */}
-                <View className="mt-6">
-                    <Text className="mb-2 text-lg font-semibold">
-                        Suggestions for You
-                    </Text>
-                    {suggestedCourses.length === 0 ? (
-                        <Text className="text-sm italic text-gray-400">
-                            No suggestions available. Please update your
-                            interests.
+                {/* Recent Students */}
+                <View className="mb-6">
+                    <View className="mb-3 flex-row items-center justify-between">
+                        <Text className="text-xl font-bold">
+                            Recent Students
                         </Text>
-                    ) : (
-                        <ScrollView
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
+                        <TouchableOpacity>
+                            <Text className="text-purple-600">See All</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                    <View className="rounded-xl bg-white p-4 shadow-sm">
+                        {recentStudents.map(student => (
+                            <TouchableOpacity
+                                key={student.id}
+                                className="mb-3 flex-row items-center border-b border-gray-100 pb-3 last:mb-0 last:border-0 last:pb-0"
+                            >
+                                <View className="mr-3 h-10 w-10 overflow-hidden rounded-full bg-gray-200">
+                                    <Image
+                                        source={{
+                                            uri:
+                                                'https://randomuser.me/api/portraits/men/' +
+                                                student.id +
+                                                '.jpg',
+                                        }}
+                                        className="h-full w-full"
+                                    />
+                                </View>
+                                <View className="flex-1">
+                                    <Text className="font-bold">
+                                        {student.name}
+                                    </Text>
+                                    <Text className="text-sm text-gray-500">
+                                        {student.course}
+                                    </Text>
+                                </View>
+                                <TouchableOpacity className="p-2">
+                                    <Ionicons
+                                        name="chatbox-ellipses-outline"
+                                        size={20}
+                                        color="#9333ea"
+                                    />
+                                </TouchableOpacity>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                </View>
+
+                {/* Quick Actions */}
+                <View className="mb-6">
+                    <Text className="mb-3 text-xl font-bold">
+                        Quick Actions
+                    </Text>
+                    <View className="flex-row flex-wrap justify-between">
+                        <TouchableOpacity
+                            className="mb-4 w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm"
+                            onPress={handleCourseList}
                         >
-                            {suggestedCourses.map((course, idx) => {
-                                const introVideoUrl =
-                                    course.modules?.[0]?.videos?.[0]?.url || '';
-
-                                return (
-                                    <View
-                                        key={idx}
-                                        className="mr-4 w-80 rounded-2xl border border-gray-200 bg-white p-2 shadow-lg"
-                                    >
-                                        <WebView
-                                            source={{ uri: introVideoUrl }}
-                                            style={{
-                                                height: 180,
-                                                borderRadius: 12,
-                                            }}
-                                            allowsInlineMediaPlayback={true}
-                                            mediaPlaybackRequiresUserAction={
-                                                false
-                                            }
-                                            allowsFullscreenVideo={true}
-                                            javaScriptEnabled={true}
-                                        />
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                router.push({
-                                                    pathname:
-                                                        '/user/courseDetails',
-                                                    params: { id: course.id },
-                                                })
-                                            }
-                                        >
-                                            <Text className="mt-3 px-2 text-base font-semibold">
-                                                {course.title}
-                                            </Text>
-                                            <Text className="px-2 text-sm text-gray-500">
-                                                By {course.instructor}
-                                            </Text>
-                                            <View className="flex-row items-center justify-between px-2">
-                                                <Text className="mt-1 text-sm text-yellow-500">
-                                                    ⭐ {course.rating}
-                                                </Text>
-                                                <Text className="mt-1 text-base font-bold text-blue-600">
-                                                    ${course.price}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                );
-                            })}
-                        </ScrollView>
-                    )}
-                </View>
-
-                {/* Top Courses */}
-                <View className="mt-6">
-                    <Text className="mb-2 text-lg font-semibold">
-                        Top Rated
-                    </Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        {topRatedCourses.map((course, idx) => {
-                            const introVideoUrl =
-                                course.modules?.[0]?.videos?.[0]?.url || '';
-
-                            return (
-                                <View
-                                    key={idx}
-                                    className="mr-4 w-80 rounded-2xl border border-gray-200 bg-white p-2 shadow-lg"
-                                >
-                                    <WebView
-                                        source={{ uri: introVideoUrl }}
-                                        style={{
-                                            height: 180,
-                                            borderRadius: 12,
-                                        }}
-                                        allowsInlineMediaPlayback={true}
-                                        mediaPlaybackRequiresUserAction={false}
-                                        allowsFullscreenVideo={true}
-                                        javaScriptEnabled={true}
-                                    />
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            router.push({
-                                                pathname: '/user/courseDetails',
-                                                params: { id: course.id },
-                                            })
-                                        }
-                                    >
-                                        <Text className="mt-3 px-2 text-base font-semibold">
-                                            {course.title}
-                                        </Text>
-                                        <Text className="px-2 text-sm text-gray-500">
-                                            By {course.instructor}
-                                        </Text>
-                                        <View className="flex-row items-center justify-between px-2">
-                                            <Text className="mt-1 text-sm text-yellow-500">
-                                                ⭐ {course.rating}
-                                            </Text>
-                                            <Text className="mt-1 text-base font-bold text-blue-600">
-                                                ${course.price}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        })}
-                    </ScrollView>
-                </View>
-
-                {/* Top seling Courses */}
-                <View className="mb-10 mt-6">
-                    <Text className="mb-2 text-lg font-semibold">
-                        Top selling
-                    </Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                    >
-                        {topSelingCourse.map((course, idx) => {
-                            const introVideoUrl =
-                                course.modules?.[0]?.videos?.[0]?.url || '';
-
-                            return (
-                                <View
-                                    key={idx}
-                                    className="mr-4 w-80 rounded-2xl border border-gray-200 bg-white p-2 shadow-lg"
-                                >
-                                    <WebView
-                                        source={{ uri: introVideoUrl }}
-                                        style={{
-                                            height: 180,
-                                            borderRadius: 12,
-                                        }}
-                                        allowsInlineMediaPlayback={true}
-                                        mediaPlaybackRequiresUserAction={false}
-                                        allowsFullscreenVideo={true}
-                                        javaScriptEnabled={true}
-                                    />
-                                    <TouchableOpacity
-                                        onPress={() =>
-                                            router.push({
-                                                pathname: '/user/courseDetails',
-                                                params: { id: course.id },
-                                            })
-                                        }
-                                    >
-                                        <Text className="mt-3 px-2 text-base font-semibold">
-                                            {course.title}
-                                        </Text>
-                                        <Text className="px-2 text-sm text-gray-500">
-                                            By {course.instructor}
-                                        </Text>
-                                        <View className="flex-row items-center justify-between px-2">
-                                            <Text className="mt-1 text-sm text-yellow-500">
-                                                ⭐ {course.rating}
-                                            </Text>
-                                            <Text className="mt-1 text-base font-bold text-blue-600">
-                                                ${course.price}
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                </View>
-                            );
-                        })}
-                    </ScrollView>
+                            <View className="mr-3 rounded-lg bg-purple-100 p-2">
+                                <MaterialIcons
+                                    name="add-circle-outline"
+                                    size={20}
+                                    color="#9333ea"
+                                />
+                            </View>
+                            <Text className="font-medium">Course List</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity className="mb-4 w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                            <View className="mr-3 rounded-lg bg-blue-100 p-2">
+                                <Ionicons
+                                    name="videocam-outline"
+                                    size={20}
+                                    color="#2563eb"
+                                />
+                            </View>
+                            <Text className="font-medium">Schedule Class</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                            <View className="mr-3 rounded-lg bg-green-100 p-2">
+                                <Ionicons
+                                    name="analytics-outline"
+                                    size={20}
+                                    color="#059669"
+                                />
+                            </View>
+                            <Text className="font-medium">View Analytics</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                            <View className="mr-3 rounded-lg bg-yellow-100 p-2">
+                                <Ionicons
+                                    name="document-text-outline"
+                                    size={20}
+                                    color="#d97706"
+                                />
+                            </View>
+                            <Text className="font-medium">View Reports</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </ScrollView>
+
             <BottomNavBarTeacher />
         </SafeAreaView>
     );
