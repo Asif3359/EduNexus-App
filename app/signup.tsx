@@ -55,9 +55,13 @@ export default function SignUpScreen() {
                     );
                     await AsyncStorage.setItem('userName', data.user.name);
                     await AsyncStorage.setItem('userEmail', data.user.email);
-                    await AsyncStorage.setItem('userLoggedIn', 'true');
-                    await AsyncStorage.setItem('isFirstTime', 'false');
                     await AsyncStorage.setItem('role', data.user.role);
+                    await AsyncStorage.setItem('isFirstTime', 'false');
+                    await AsyncStorage.setItem('userLoggedIn', 'true');
+                    await AsyncStorage.setItem(
+                        'userLocation',
+                        data.user.Location
+                    );
 
                     router.push('/verification?source=signup');
                 } else {

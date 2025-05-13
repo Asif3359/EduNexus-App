@@ -42,6 +42,7 @@ function studentProfilesetup() {
         const fetchStudent = async () => {
             try {
                 const userId = await AsyncStorage.getItem('userId');
+                const userLocation = await AsyncStorage.getItem('userLocation');
                 if (!userId) {
                     Alert.alert('Error', 'Missing user ID.');
                     setLoading(false);
@@ -54,7 +55,7 @@ function studentProfilesetup() {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            Location: 'Khulna',
+                            Location: userLocation,
                         },
                     }
                 );
@@ -209,10 +210,13 @@ function studentProfilesetup() {
         const userName = await AsyncStorage.getItem('userName');
         const userEmail = await AsyncStorage.getItem('userEmail');
         const userRole = await AsyncStorage.getItem('role');
+        const userLocation = await AsyncStorage.getItem('userLocation');
+
         console.log('User ID:', user_id);
         console.log('User Name:', userName);
         console.log('User Email:', userEmail);
         console.log('User Role:', userRole);
+        console.log('User Location:', userLocation);
 
         // Gather profile data
         const profileData = {
@@ -227,7 +231,7 @@ function studentProfilesetup() {
             interests,
             socialLinks,
             education: educationList,
-            Location: 'Khulna',
+            Location: userLocation,
         };
 
         // console.log('Submitted Data:', profileData);

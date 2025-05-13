@@ -58,12 +58,17 @@ export default function LoginScreen() {
                     await AsyncStorage.setItem('role', data.user.role);
                     await AsyncStorage.setItem('isFirstTime', 'false');
                     await AsyncStorage.setItem('userLoggedIn', 'true');
+                    await AsyncStorage.setItem(
+                        'userLocation',
+                        data.user.Location
+                    );
 
                     console.log('User data saved:', {
                         userId: data.user.user_id,
                         userName: data.user.name,
                         userEmail: data.user.email,
                         userRole: data.user.role,
+                        userLocation: data.user.Location,
                     });
 
                     // if (data.user.role === 'admin') {

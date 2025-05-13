@@ -19,6 +19,7 @@ import Constants from 'expo-constants';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { convertImageUrl } from '../components/convertImageUrl';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Course {
     id: number;
@@ -60,8 +61,9 @@ export default function TeacherCourseDetail() {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
+                const userLocation = await AsyncStorage.getItem('userLocation');
                 const response = await fetch(
-                    `${apiUrl}/course/${id}?location=Khulna`
+                    `${apiUrl}/course/${id}?location=${userLocation}`
                 );
                 const data = await response.json();
 
@@ -99,8 +101,10 @@ export default function TeacherCourseDetail() {
 
     const fetchModules = async (courseId: number) => {
         try {
+            const userLocation = await AsyncStorage.getItem('userLocation');
+
             const response = await fetch(
-                `${apiUrl}/courses/${courseId}/modules?location=Khulna`
+                `${apiUrl}/courses/${courseId}/modules?location=${userLocation}`
             );
             const data = await response.json();
             if (data.success) {
@@ -120,13 +124,15 @@ export default function TeacherCourseDetail() {
 
         setIsSubmitting(true);
         try {
+            const userLocation = await AsyncStorage.getItem('userLocation');
+
             const response = await fetch(`${apiUrl}/modules`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    location: 'Khulna',
+                    location: userLocation,
                     course_id: id,
                     title: newModuleTitle,
                     position: modules.length + 1,
@@ -217,13 +223,15 @@ export default function TeacherCourseDetail() {
             ]
         );
     };
-    const navigateToLessons = (moduleId: number) => {
+    const navigateToLessons = async (moduleId: number) => {
+        const userLocation = await AsyncStorage.getItem('userLocation');
+
         router.push({
             pathname: '/manageLessons/[moduleId]',
             params: {
                 courseId: id,
                 moduleId: moduleId.toString(),
-                location: 'Khulna',
+                location: userLocation,
             },
         });
     };

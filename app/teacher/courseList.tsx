@@ -39,11 +39,10 @@ function CourseList() {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
-    const API_BASE_URL = 'http://10.0.2.2:8000';
+    const baseUrl = (Constants.expoConfig as any).extra.API_BASE_URL;
 
     const fetchCourses = async () => {
         try {
-            // Get location from AsyncStorage or use default
             const userLocation =
                 (await AsyncStorage.getItem('userLocation')) || 'Khulna';
 
@@ -103,14 +102,6 @@ function CourseList() {
                         <Ionicons name="refresh" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
-
-                {/* Location Indicator */}
-                {/* <View className="mt-4 flex-row items-center">
-                    <Ionicons name="location-sharp" size={16} color="#a5b4fc" />
-                    <Text className="text-indigo-200 ml-1 text-sm">
-                        Showing courses in: <Text className="font-semibold">{AsyncStorage.getItem('userLocation') || 'Khulna'}</Text>
-                    </Text>
-                </View> */}
             </View>
 
             <ScrollView
@@ -140,7 +131,7 @@ function CourseList() {
                                             uri:
                                                 convertImageUrl(
                                                     course.thumbnail,
-                                                    API_BASE_URL
+                                                    baseUrl
                                                 ) ||
                                                 'https://images.unsplash.com/photo-1541178735493-479c1a27ed24?q=80&w=1471&auto=format&fit=crop',
                                         }}

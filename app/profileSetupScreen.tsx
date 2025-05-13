@@ -86,11 +86,12 @@ export default function ProfileSetupScreen() {
         const userName = await AsyncStorage.getItem('userName');
         const userEmail = await AsyncStorage.getItem('userEmail');
         const userRole = await AsyncStorage.getItem('role');
+        const userLocation = await AsyncStorage.getItem('userLocation');
         console.log('User ID:', user_id);
         console.log('User Name:', userName);
         console.log('User Email:', userEmail);
         console.log('User Role:', userRole);
-
+        console.log('User Location:', userLocation);
         // Gather profile data
         const profileData = {
             user_id,
@@ -101,7 +102,7 @@ export default function ProfileSetupScreen() {
             interests,
             socialLinks,
             education: educationList,
-            Location: 'Khulna',
+            Location: userLocation,
         };
 
         // console.log('Submitted Data:', profileData);

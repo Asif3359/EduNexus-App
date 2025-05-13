@@ -66,8 +66,9 @@ function CreateCourse() {
             const userId = await AsyncStorage.getItem('userId');
             const userEmail = await AsyncStorage.getItem('userEmail');
             const userName = await AsyncStorage.getItem('userName');
+            const userLocation = await AsyncStorage.getItem('userLocation');
 
-            if (!userId || !userEmail || !userName) {
+            if (!userId || !userEmail || !userName || !userLocation) {
                 throw new Error('User information not found');
             }
 
@@ -75,7 +76,7 @@ function CreateCourse() {
             formData.append('user_id', userId);
             formData.append('userName', userName);
             formData.append('userEmail', userEmail);
-            formData.append('Location', 'Khulna');
+            formData.append('Location', userLocation || '');
             formData.append('title', title);
             formData.append('description', description);
             formData.append('price', parseFloat(price).toString());

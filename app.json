@@ -16,7 +16,13 @@
                 "foregroundImage": "./assets/images/adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "package": "com.asifahammednishst.EduNexus"
+            "package": "com.asifahammednishst.EduNexus",
+            "permissions": [
+                "USE_BIOMETRIC",
+                "USE_FINGERPRINT",
+                "READ_CALENDAR",
+                "WRITE_CALENDAR"
+            ]
         },
         "web": {
             "bundler": "metro",
@@ -45,13 +51,16 @@
                     "supportsBackgroundPlayback": true,
                     "supportsPictureInPicture": true
                 }
-            ]
+            ],
+            "expo-secure-store",
+            "@react-native-community/datetimepicker"
         ],
         "experiments": {
             "typedRoutes": true
         },
         "extra": {
             "BACKEND_API": "http://10.0.2.2:8000/api",
+            "API_BASE_URL": "http://10.0.2.2:8000",
             "router": {
                 "origin": false
             },

@@ -27,6 +27,7 @@ export default function ProfileScreen() {
         const fetchStudent = async () => {
             try {
                 const userId = await AsyncStorage.getItem('userId');
+                const userLocation = await AsyncStorage.getItem('userLocation');
                 if (!userId) {
                     Alert.alert('Error', 'Missing user ID.');
                     setLoading(false);
@@ -39,7 +40,7 @@ export default function ProfileScreen() {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            Location: 'Khulna',
+                            Location: userLocation,
                         },
                     }
                 );
