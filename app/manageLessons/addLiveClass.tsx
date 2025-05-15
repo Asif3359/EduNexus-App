@@ -14,6 +14,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import { format } from 'date-fns';
 
 const apiUrl = (Constants.expoConfig as any).extra?.BACKEND_API;
 
@@ -51,26 +52,28 @@ export default function AddLiveClass() {
 
         setIsLoading(true);
         try {
-            const token = await AsyncStorage.getItem('userToken');
-            const response = await fetch(`${apiUrl}/api/live-classes`, {
+            const userLocation = await AsyncStorage.getItem('userLocation');
+            const formattedSchedule = format(schedule, 'yyyy-MM-dd HH:mm:ss');
+            const response = await fetch(`${apiUrl}/live-classes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    module_id: moduleId,
-                    title,
-                    link,
+                    module_id: parseInt(moduleId),
+                    title: title,
+                    link: link,
                     duration: parseInt(duration),
-                    schedule: schedule.toISOString(),
+                    schedule: formattedSchedule,
+                    location: userLocation,
                 }),
             });
-
-            if (!response.ok) throw new Error('Failed to schedule live class');
-
-            Alert.alert('Success', 'Live class scheduled successfully');
-            router.back();
+            if (response.ok) {
+                Alert.alert('Success', 'Live class scheduled successfully');
+                router.back();
+            } else {
+                Alert.alert('Error', 'Failed to schedule live class');
+            }
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Failed to schedule live class');

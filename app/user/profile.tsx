@@ -27,6 +27,7 @@ export default function ProfileScreen() {
             try {
                 const userId = await AsyncStorage.getItem('userId');
                 const userLocation = await AsyncStorage.getItem('userLocation');
+
                 if (!userId) {
                     Alert.alert('Error', 'Missing user ID.');
                     setLoading(false);
@@ -47,10 +48,8 @@ export default function ProfileScreen() {
                 if (response.data.success) {
                     setStudent(response.data.data);
                 } else {
-                    Alert.alert(
-                        'Error',
-                        response.data.message || 'Failed to fetch profile.'
-                    );
+                    console.log('Profile fetch error:', response.data.message);
+                    router.push('/user/studentProfilesetup');
                 }
             } catch (error) {
                 console.error('Profile fetch error:', error);
@@ -149,7 +148,7 @@ export default function ProfileScreen() {
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="p-4">
                 {/* Profile Image and Basic Info */}
-                <View className="mb-4 items-center">
+                <View className="mb-4 items-center rounded-lg bg-gray-200 py-4">
                     <Image
                         source={{
                             uri:
@@ -166,14 +165,13 @@ export default function ProfileScreen() {
                     <Text className="text-gray-500">
                         {student.student_profile?.mobile}
                     </Text>
+                    {/* Bio */}
+                    {student.student_profile?.bio && (
+                        <Text className="rounded-lg bg-gray-200 p-4 font-semibold italic text-gray-600">
+                            "{student.student_profile.bio}"
+                        </Text>
+                    )}
                 </View>
-
-                {/* Bio */}
-                {student.student_profile?.bio && (
-                    <Text className="mb-4 text-gray-600">
-                        {student.student_profile.bio}
-                    </Text>
-                )}
 
                 {/* Education */}
                 {student.educations?.length > 0 && (
@@ -206,7 +204,7 @@ export default function ProfileScreen() {
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Skills
                         </Text>
-                        <View className="flex-row flex-wrap gap-2">
+                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
                             {student.skills.map((skill: any, index: number) => (
                                 <Text
                                     key={index}
@@ -225,7 +223,7 @@ export default function ProfileScreen() {
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Interests
                         </Text>
-                        <View className="flex-row flex-wrap gap-2">
+                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
                             {student.interests.map(
                                 (interest: any, index: number) => (
                                     <Text
@@ -246,24 +244,26 @@ export default function ProfileScreen() {
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Social Links
                         </Text>
-                        {student.social_links.map(
-                            (link: any, index: number) => (
-                                <TouchableOpacity
-                                    key={index}
-                                    onPress={() =>
-                                        Linking.openURL(link.social_link)
-                                    }
-                                >
-                                    <Text className="mb-1 text-blue-600 underline">
-                                        {link.social_link}
-                                    </Text>
-                                </TouchableOpacity>
-                            )
-                        )}
+                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
+                            {student.social_links.map(
+                                (link: any, index: number) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() =>
+                                            Linking.openURL(link.social_link)
+                                        }
+                                    >
+                                        <Text className="mb-1 text-blue-600 underline">
+                                            {link.social_link}
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                            )}
+                        </View>
                     </View>
                 )}
                 <TouchableOpacity
-                    className="mt-6 items-center rounded-lg bg-blue-500 py-3"
+                    className="mt-2 items-center rounded-lg bg-blue-500 py-3"
                     onPress={handleSetupProfile}
                 >
                     <Text className="font-semibold text-white">
@@ -271,7 +271,7 @@ export default function ProfileScreen() {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    className="mt-6 items-center rounded-lg bg-green-500 py-3"
+                    className="mt-4 items-center rounded-lg bg-green-500 py-3"
                     onPress={handleApplyForTeacher}
                 >
                     <Text className="font-semibold text-white">
@@ -280,13 +280,12 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
                 {/* Logout Button */}
                 <TouchableOpacity
-                    className="mt-6 items-center rounded-lg bg-red-500 py-3"
+                    className="mb-20 mt-4 items-center rounded-lg bg-red-500 py-3"
                     onPress={handleLogout}
                 >
                     <Text className="font-semibold text-white">Logout</Text>
                 </TouchableOpacity>
             </ScrollView>
-
             <BottomNavigationBar />
         </SafeAreaView>
     );

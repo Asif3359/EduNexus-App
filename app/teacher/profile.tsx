@@ -18,13 +18,13 @@ import Constants from 'expo-constants';
 import BottomNavBarTeacher from '../components/BottomNavBarTeacher';
 
 export default function ProfileScreen() {
-    const [student, setStudent] = useState<any>(null);
+    const [teacher, setTeacher] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     useEffect(() => {
-        const fetchStudent = async () => {
+        const fetchTeacherProfile = async () => {
             try {
                 const userId = await AsyncStorage.getItem('userId');
                 const userLocation = await AsyncStorage.getItem('userLocation');
@@ -46,7 +46,7 @@ export default function ProfileScreen() {
                 );
 
                 if (response.data.success) {
-                    setStudent(response.data.data);
+                    setTeacher(response.data.data);
                 } else {
                     Alert.alert(
                         'Error',
@@ -64,7 +64,7 @@ export default function ProfileScreen() {
             }
         };
 
-        fetchStudent();
+        fetchTeacherProfile();
     }, []);
 
     const handleLogout = async () => {
@@ -101,11 +101,11 @@ export default function ProfileScreen() {
         );
     }
 
-    if (!student) {
+    if (!teacher) {
         return (
             <SafeAreaView className="flex-1 items-center justify-center">
                 <Text className="font-semibold text-red-600">
-                    Student not found.
+                    teacher not found.
                 </Text>
             </SafeAreaView>
         );
@@ -115,39 +115,39 @@ export default function ProfileScreen() {
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="p-4">
                 {/* Profile Image and Basic Info */}
-                <View className="mb-4 items-center">
+                <View className="mb-4 items-center rounded-lg bg-gray-100 p-4">
                     <Image
                         source={{
                             uri:
-                                student.teacher_profile?.profile_picture ||
+                                teacher.teacher_profile?.profile_picture ||
                                 'https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg',
                         }}
                         className="h-24 w-24 rounded-full border-2 border-gray-300 bg-gray-500"
                         alt="Profile Picture"
                     />
                     <Text className="mt-2 text-xl font-bold text-gray-800">
-                        {student.name}
+                        {teacher.name}
                     </Text>
-                    <Text className="text-gray-500">{student.email}</Text>
+                    <Text className="text-gray-500">{teacher.email}</Text>
                     <Text className="text-gray-500">
-                        {student.teacher_profile?.mobile}
+                        {teacher.teacher_profile?.mobile}
                     </Text>
                 </View>
 
                 {/* Bio */}
-                {student.teacher_profile?.bio && (
-                    <Text className="mb-4 text-gray-600">
-                        {student.teacher_profile.bio}
+                {teacher.teacher_profile?.bio && (
+                    <Text className="mb-4 rounded-lg bg-gray-100 p-4 text-gray-600">
+                        {teacher.teacher_profile.bio}
                     </Text>
                 )}
 
                 {/* Education */}
-                {student.educations?.length > 0 && (
+                {teacher.educations?.length > 0 && (
                     <View className="mb-4">
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Education
                         </Text>
-                        {student.educations.map((edu: any, index: number) => (
+                        {teacher.educations.map((edu: any, index: number) => (
                             <View
                                 key={index}
                                 className="mb-2 rounded-md bg-gray-100 p-3"
@@ -167,13 +167,13 @@ export default function ProfileScreen() {
                 )}
 
                 {/* Skills */}
-                {student.skills?.length > 0 && (
+                {teacher.skills?.length > 0 && (
                     <View className="mb-4">
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Skills
                         </Text>
-                        <View className="flex-row flex-wrap gap-2">
-                            {student.skills.map((skill: any, index: number) => (
+                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
+                            {teacher.skills.map((skill: any, index: number) => (
                                 <Text
                                     key={index}
                                     className="rounded-full bg-purple-200 px-3 py-1 text-sm text-purple-800"
@@ -186,13 +186,13 @@ export default function ProfileScreen() {
                 )}
 
                 {/* Interests */}
-                {student.interests?.length > 0 && (
+                {teacher.interests?.length > 0 && (
                     <View className="mb-4">
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Interests
                         </Text>
-                        <View className="flex-row flex-wrap gap-2">
-                            {student.interests.map(
+                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
+                            {teacher.interests.map(
                                 (interest: any, index: number) => (
                                     <Text
                                         key={index}
@@ -207,20 +207,21 @@ export default function ProfileScreen() {
                 )}
 
                 {/* Social Links */}
-                {student.social_links?.length > 0 && (
+                {teacher.social_links?.length > 0 && (
                     <View className="mb-4">
                         <Text className="mb-1 text-lg font-semibold text-gray-800">
                             Social Links
                         </Text>
-                        {student.social_links.map(
+                        {teacher.social_links.map(
                             (link: any, index: number) => (
                                 <TouchableOpacity
                                     key={index}
                                     onPress={() =>
                                         Linking.openURL(link.social_link)
                                     }
+                                    className="mb-1 rounded-lg bg-gray-100 p-3"
                                 >
-                                    <Text className="mb-1 text-blue-600 underline">
+                                    <Text className="text-blue-600 underline">
                                         {link.social_link}
                                     </Text>
                                 </TouchableOpacity>

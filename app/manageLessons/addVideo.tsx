@@ -34,25 +34,32 @@ export default function AddVideo() {
 
         setIsLoading(true);
         try {
-            const token = await AsyncStorage.getItem('userToken');
-            const response = await fetch(`${apiUrl}/api/videos`, {
+            const userLocation = await AsyncStorage.getItem('userLocation');
+            // console.log(userLocation);
+            // console.log(moduleId);
+            // console.log(title);
+            // console.log(videoUrl);
+            // console.log(position);
+            const response = await fetch(`${apiUrl}/videos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify({
-                    module_id: moduleId,
-                    title,
+                    module_id: parseInt(moduleId),
+                    title: title,
                     video_url: videoUrl,
                     position: parseInt(position),
+                    location: userLocation,
                 }),
             });
 
-            if (!response.ok) throw new Error('Failed to add video');
-
-            Alert.alert('Success', 'Video added successfully');
-            router.back();
+            if (response.ok) {
+                Alert.alert('Success', 'Video added successfully');
+                router.back();
+            } else {
+                Alert.alert('Error', 'Failed to add video');
+            }
         } catch (error) {
             console.error(error);
             Alert.alert('Error', 'Failed to add video');

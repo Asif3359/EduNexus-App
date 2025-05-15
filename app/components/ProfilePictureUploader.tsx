@@ -93,7 +93,6 @@ export default function ProfilePictureUploader({
             );
 
             const data = await response.json();
-            console.log('Upload response:', data);
 
             if (!response.ok) {
                 throw new Error(data.error?.message || 'Upload failed');

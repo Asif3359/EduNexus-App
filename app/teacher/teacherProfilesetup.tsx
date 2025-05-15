@@ -17,7 +17,7 @@ import Constants from 'expo-constants';
 import axios from 'axios';
 import ProfilePictureUploader from '../components/ProfilePictureUploader';
 
-function teacherProfilesetup() {
+function TeacherProfilesetup() {
     const router = useRouter();
 
     const [skills, setSkills] = useState(['']);
@@ -498,4 +498,4 @@ function teacherProfilesetup() {
     );
 }
 
-export default teacherProfilesetup;
+export default TeacherProfilesetup;

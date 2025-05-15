@@ -13,6 +13,8 @@ import { Ionicons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useIsFocused } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 type RootStackParamList = {
     '/manageLessons/addVideo': {
@@ -49,6 +51,8 @@ export default function ManageLessons() {
     const [loading, setLoading] = useState(false);
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
+    const isFocused = useIsFocused();
+
     useEffect(() => {
         navigation.setOptions({
             title: 'Manage Content',
@@ -79,18 +83,22 @@ export default function ManageLessons() {
                 </View>
             ),
         });
-        // fetchContent();
-    }, []);
+
+        if (isFocused) {
+            fetchContent();
+        }
+    }, [isFocused]);
 
     const fetchContent = async () => {
         try {
-            const token = await AsyncStorage.getItem('userToken');
+            const userLocation = await AsyncStorage.getItem('userLocation');
             const response = await fetch(
-                `${apiUrl}/api/modules/${moduleId}/content`
+                `${apiUrl}/modules/${moduleId}/?location=${userLocation}`
             );
             const data = await response.json();
-            setVideos(data.videos);
-            setLiveClasses(data.live_classes);
+
+            setVideos(data.module?.videos);
+            setLiveClasses(data.module?.live_classes);
         } catch (error) {
             console.error('Error fetching content:', error);
             Alert.alert('Error', 'Failed to load content');

@@ -17,7 +17,7 @@ import Constants from 'expo-constants';
 import axios from 'axios';
 import ProfilePictureUploader from '../components/ProfilePictureUploader';
 
-function studentProfilesetup() {
+function StudentProfilesetup() {
     const router = useRouter();
 
     const [skills, setSkills] = useState(['']);
@@ -109,10 +109,7 @@ function studentProfilesetup() {
                     setMobile(response.data.data.student_profile?.mobile || '');
                     setBio(response.data.data.student_profile?.bio || '');
                 } else {
-                    Alert.alert(
-                        'Error',
-                        response.data.message || 'Failed to fetch profile.'
-                    );
+                    console.log('Profile fetch error:', response.data.message);
                 }
             } catch (error) {
                 console.error('Profile fetch error:', error);
@@ -212,11 +209,11 @@ function studentProfilesetup() {
         const userRole = await AsyncStorage.getItem('role');
         const userLocation = await AsyncStorage.getItem('userLocation');
 
-        console.log('User ID:', user_id);
-        console.log('User Name:', userName);
-        console.log('User Email:', userEmail);
-        console.log('User Role:', userRole);
-        console.log('User Location:', userLocation);
+        // console.log('User ID:', user_id);
+        // console.log('User Name:', userName);
+        // console.log('User Email:', userEmail);
+        // console.log('User Role:', userRole);
+        // console.log('User Location:', userLocation);
 
         // Gather profile data
         const profileData = {
@@ -280,7 +277,7 @@ function studentProfilesetup() {
                 console.log('Success:', data.message); // 👈 Print success message
             } else {
                 console.error(
-                    'Error:',
+                    'Error :',
                     data.message || 'Failed to save profile.'
                 );
             }
@@ -495,4 +492,4 @@ function studentProfilesetup() {
     );
 }
 
-export default studentProfilesetup;
+export default StudentProfilesetup;

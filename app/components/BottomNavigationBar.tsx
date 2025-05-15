@@ -12,7 +12,7 @@ function BottomNavigationBar() {
     };
 
     return (
-        <View className="absolute bottom-0 left-0 right-0 flex-row items-center justify-around rounded-t-3xl bg-gray-100 py-6">
+        <View className="absolute bottom-0 left-0 right-0 mt-10 flex-row items-center justify-around rounded-t-3xl bg-gray-100 py-6">
             <TouchableOpacity onPress={() => handlePress('/user')}>
                 <FontAwesome
                     name="home"
@@ -24,21 +24,21 @@ function BottomNavigationBar() {
                 <MaterialIcons
                     name="menu-book"
                     size={28}
-                    color={pathname === '/cource' ? '#9333ea' : '#000'}
+                    color={pathname === '/user/cource' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress('/user/history')}>
                 <Feather
                     name="clock"
                     size={28}
-                    color={pathname === '/history' ? '#9333ea' : '#000'}
+                    color={pathname === '/user/history' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handlePress('/user/profile')}>
                 <Feather
                     name="user"
                     size={28}
-                    color={pathname === '/profile' ? '#9333ea' : '#000'}
+                    color={pathname === '/user/profile' ? '#9333ea' : '#000'}
                 />
             </TouchableOpacity>
         </View>

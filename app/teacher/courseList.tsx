@@ -88,7 +88,7 @@ function CourseList() {
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
             {/* Header */}
-            <View className="rounded-b-3xl bg-indigo-600 px-6 py-6 shadow-lg">
+            <View className="bg-purple-600 px-6 py-6 shadow-lg">
                 <View className="flex-row items-center justify-between">
                     <View>
                         <Text className="text-2xl font-bold text-white">
@@ -219,7 +219,7 @@ function CourseList() {
 
             {/* Floating Action Button */}
             <TouchableOpacity
-                className="absolute bottom-6 right-6 flex-row items-center justify-center rounded-full bg-indigo-600 p-5 shadow-xl shadow-indigo-400/30"
+                className="absolute bottom-6 right-6 flex-row items-center justify-center rounded-full bg-purple-600 p-4 shadow-xl shadow-indigo-400/30"
                 onPress={() => router.push('/teacher/createCourse')}
                 activeOpacity={0.8}
             >

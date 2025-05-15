@@ -139,7 +139,10 @@ export default function RootLayout() {
                 />
                 <Stack.Screen
                     name="teacher/schedule"
-                    options={{ title: 'Add Schedule', headerShown: true }}
+                    options={{
+                        title: 'Scheduled Classes',
+                        headerShown: true,
+                    }}
                 />
 
                 {/* Courses  */}

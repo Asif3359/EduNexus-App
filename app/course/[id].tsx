@@ -55,7 +55,7 @@ export default function TeacherCourseDetail() {
     const [editModuleTitle, setEditModuleTitle] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
-    const API_BASE_URL = 'http://10.0.2.2:8000';
+    const baseURI = (Constants.expoConfig as any).extra.API_BASE_URL;
     const router = useRouter();
 
     useEffect(() => {
@@ -274,7 +274,7 @@ export default function TeacherCourseDetail() {
                 <Image
                     source={{
                         uri:
-                            convertImageUrl(course.thumbnail, API_BASE_URL) ||
+                            convertImageUrl(course.thumbnail, baseURI) ||
                             'https://images.unsplash.com/photo-1541178735493-479c1a27ed24?q=80&w=1471&auto=format&fit=crop',
                     }}
                     className="h-48 w-full"
