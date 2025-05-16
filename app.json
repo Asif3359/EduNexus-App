@@ -9,7 +9,8 @@
         "userInterfaceStyle": "automatic",
         "newArchEnabled": true,
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "com.asifahammednishst.EduNexus"
         },
         "android": {
             "adaptiveIcon": {
@@ -53,7 +54,14 @@
                 }
             ],
             "expo-secure-store",
-            "@react-native-community/datetimepicker"
+            "@react-native-community/datetimepicker",
+            [
+                "@stripe/stripe-react-native",
+                {
+                    "merchantIdentifier": "merchant.com.asifahammednishst.EduNexus",
+                    "enableApplePay": true
+                }
+            ]
         ],
         "experiments": {
             "typedRoutes": true

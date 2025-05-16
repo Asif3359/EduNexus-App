@@ -195,6 +195,14 @@ CREATE TABLE Enrollments (
     FOREIGN KEY (CourseID) REFERENCES Courses(CourseID)
 );
 
+-- 22. Teacher wallet
+CREATE TABLE TeacherWallet (
+    WalletID INT PRIMARY KEY AUTO_INCREMENT,
+    TeacherID INT,
+    Balance DECIMAL(10,2),
+    FOREIGN KEY (TeacherID) REFERENCES Users(UserID)
+);
+
 -- 22. Connections
 CREATE TABLE Connections (
     ConnectionID INT PRIMARY KEY AUTO_INCREMENT,

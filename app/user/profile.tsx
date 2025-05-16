@@ -110,38 +110,8 @@ export default function ProfileScreen() {
     }
 
     const handleApplyForTeacher = async () => {
-        router.push('/user/applyForTeacher');
-
-        // const userId = await AsyncStorage.getItem('userId');
-        // if (!userId) {
-        //     Alert.alert('Error', 'Missing user ID.');
-        //     return;
-        // }
-
-        // try {
-        //     const response = await axios.post(
-        //         `${apiUrl}/student/apply-for-teacher/${userId}`,
-        //         {},
-        //         {
-        //             headers: {
-        //                 'Content-Type': 'application/json',
-        //                 Accept: 'application/json',
-        //             },
-        //         }
-        //     );
-
-        //     if (response.data.success) {
-        //         Alert.alert('Success', response.data.message);
-        //     } else {
-        //         Alert.alert('Error', response.data.message);
-        //     }
-        // } catch (error) {
-        //     console.error('Apply for teacher error:', error);
-        //     Alert.alert(
-        //         'Error',
-        //         'An error occurred while applying for teacher.'
-        //     );
-        // }
+        router.push('/payment/paymentScreen');
+        // router.push('/user/applyForTeacher');
     };
 
     return (
