@@ -94,8 +94,15 @@ export const usePayment = () => {
 
             await AsyncStorage.setItem('clientSecret', clientSecret);
 
-            Alert.alert('Success', 'Payment completed successfully!');
-            router.push('/user/applyForTeacher');
+            // Alert.alert('Success', 'Payment completed successfully!');
+            // router.push('/user/applyForTeacher');
+
+            Alert.alert('Success', 'Payment successfull!', [
+                {
+                    text: 'OK',
+                    onPress: () => router.replace('/user/applyForTeacher'),
+                },
+            ]);
         } catch (error: unknown) {
             Alert.alert('Error', (error as Error)?.message || 'Payment failed');
         } finally {

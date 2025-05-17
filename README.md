@@ -24,7 +24,7 @@ When you're ready, run:
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+<!-- This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
 Testing in Android Emulator:
 Use these test cards:
@@ -41,4 +41,10 @@ Any future date (e.g., 12/34)
 
 CVC: Any 3 digits
 
-Make sure your backend URL is accessible from the emulator (use your local IP, not localhost)
+Make sure your backend URL is accessible from the emulator (use your local IP, not localhost) -->
+
+## TODO
+
+modify user role in async storage /
+modify user profile data /
+thats it .

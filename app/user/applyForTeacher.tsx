@@ -94,11 +94,11 @@ function ApplyForTeacher() {
 
             const data = await teacherResponse.json();
 
-            console.log(data);
-
             if (!teacherResponse.ok) {
                 throw new Error('Failed to submit teacher application');
             }
+
+            await AsyncStorage.setItem('role', data.user.Location);
 
             Alert.alert(
                 'Success',
