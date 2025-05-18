@@ -46,8 +46,10 @@ function CourseList() {
             const userLocation =
                 (await AsyncStorage.getItem('userLocation')) || 'Khulna';
 
+            const userId = await AsyncStorage.getItem('userId');
+
             const response = await fetch(
-                `${apiUrl}/courses?location=${encodeURIComponent(userLocation)}`
+                `${apiUrl}/courses/teacher/${userId}?location=${encodeURIComponent(userLocation)}`
             );
             const data = await response.json();
 

@@ -10,10 +10,11 @@ import {
     Image,
 } from 'react-native';
 import { Stack } from 'expo-router';
+import { useEnrollPayment } from './hooks/useenroll';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { usePayment } from './hooks/usePayment';
-export default function PaymentScreen() {
+
+export default function EnrolPaymentScreen() {
     const {
         loading,
         cardDetails,
@@ -22,7 +23,9 @@ export default function PaymentScreen() {
         handleExpiryChange,
         handleCvcChange,
         handleSubmitPayment,
-    } = usePayment();
+        courseTitle,
+        coursePrice,
+    } = useEnrollPayment();
 
     return (
         <KeyboardAvoidingView
@@ -31,7 +34,7 @@ export default function PaymentScreen() {
         >
             <Stack.Screen
                 options={{
-                    title: 'Payment',
+                    title: 'Enrollment Payment',
                     headerTitleStyle: { color: '#4F46E5' },
                     headerTintColor: '#4F46E5',
                 }}
@@ -42,11 +45,24 @@ export default function PaymentScreen() {
             >
                 <View className="mb-8">
                     <Text className="mb-2 text-3xl font-bold text-gray-900">
-                        Payment Details for Teacher Application
+                        Course Enrollment
                     </Text>
                     <Text className="text-gray-500">
-                        Enter your card information to complete the payment
+                        Complete your enrollment for {courseTitle}
                     </Text>
+                </View>
+
+                {/* Course Summary */}
+                <View className="mb-8 rounded-xl bg-white p-6 shadow-lg">
+                    <Text className="mb-4 text-lg font-semibold text-gray-900">
+                        Course Details
+                    </Text>
+                    <View className="flex-row items-center justify-between">
+                        <Text className="text-gray-600">{courseTitle}</Text>
+                        <Text className="text-lg font-bold text-purple-600">
+                            ${coursePrice}
+                        </Text>
+                    </View>
                 </View>
 
                 {/* Card Preview */}
@@ -116,9 +132,7 @@ export default function PaymentScreen() {
                                 className="flex-1 text-gray-800"
                                 placeholder="1234 5678 9012 3456"
                                 keyboardType="numeric"
-                                value={
-                                    cardDetails.number || '4242 4242 4242 4242'
-                                }
+                                value={cardDetails.number}
                                 onChangeText={handleCardNumberChange}
                                 maxLength={19}
                             />
@@ -151,7 +165,7 @@ export default function PaymentScreen() {
                                     className="flex-1 text-gray-800"
                                     placeholder="MM/YY"
                                     keyboardType="numeric"
-                                    value={cardDetails.expiry || '12/25'}
+                                    value={cardDetails.expiry}
                                     onChangeText={handleExpiryChange}
                                     maxLength={5}
                                 />
@@ -181,7 +195,7 @@ export default function PaymentScreen() {
                                     className="flex-1 text-gray-800"
                                     placeholder="123"
                                     keyboardType="numeric"
-                                    value={cardDetails.cvc || '123'}
+                                    value={cardDetails.cvc}
                                     onChangeText={handleCvcChange}
                                     maxLength={3}
                                     secureTextEntry
@@ -206,7 +220,7 @@ export default function PaymentScreen() {
                                 <ActivityIndicator color="white" />
                             ) : (
                                 <Text className="text-lg font-bold text-white">
-                                    Pay $10.00
+                                    Pay ${coursePrice}
                                 </Text>
                             )}
                         </LinearGradient>

@@ -72,11 +72,17 @@ function TeacherHome() {
         try {
             const userLocation =
                 (await AsyncStorage.getItem('userLocation')) || 'Khulna';
+            const userId = await AsyncStorage.getItem('userId');
+            console.log('userId :', userId);
 
             const response = await fetch(
-                `${apiUrl}/courses?location=${encodeURIComponent(userLocation)}`
+                `${apiUrl}/courses/teacher/${userId}?location=${encodeURIComponent(
+                    userLocation
+                )}`
             );
             const data = await response.json();
+
+            console.log('data :', data);
 
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to fetch courses');

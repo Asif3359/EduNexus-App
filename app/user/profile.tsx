@@ -111,7 +111,6 @@ export default function ProfileScreen() {
 
     const handleApplyForTeacher = async () => {
         router.push('/payment/paymentScreen');
-        // router.push('/user/applyForTeacher');
     };
 
     return (

@@ -8,6 +8,8 @@ import {
     View,
     Alert,
     Image,
+    Modal,
+    Pressable,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
@@ -21,16 +23,33 @@ interface ImageInfo {
     type?: string;
 }
 
+const categories = [
+    'Development',
+    'Business',
+    'Finance & Accounting',
+    'IT & Software',
+    'Office Productivity',
+    'Personal Development',
+    'Design',
+    'Marketing',
+    'Lifestyle',
+    'Photography & Video',
+    'Health & Fitness',
+    'Music',
+    'Teaching & Academics',
+];
+
 function CreateCourse() {
     const [title, setTitle] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [price, setPrice] = useState<string>('');
+    const [category, setCategory] = useState<string>('');
+    const [showCategoryModal, setShowCategoryModal] = useState<boolean>(false);
     const [thumbnail, setThumbnail] = useState<ImageInfo | null>(null);
     const [isUploading, setIsUploading] = useState<boolean>(false);
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     const pickImage = async () => {
-        // Request permission
         const { status } =
             await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (status !== 'granted') {
@@ -41,7 +60,6 @@ function CreateCourse() {
             return;
         }
 
-        // Launch image picker
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
@@ -55,7 +73,12 @@ function CreateCourse() {
     };
 
     const handleSubmit = async () => {
-        if (!title.trim() || !description.trim() || !price.trim()) {
+        if (
+            !title.trim() ||
+            !description.trim() ||
+            !price.trim() ||
+            !category.trim()
+        ) {
             Alert.alert('Error', 'Please fill in all required fields');
             return;
         }
@@ -80,6 +103,7 @@ function CreateCourse() {
             formData.append('title', title);
             formData.append('description', description);
             formData.append('price', parseFloat(price).toString());
+            formData.append('category', category);
 
             if (thumbnail) {
                 const localUri = thumbnail.uri;
@@ -92,7 +116,7 @@ function CreateCourse() {
                     uri: localUri,
                     name: filename,
                     type,
-                } as any); // Type assertion needed for React Native FormData
+                } as any);
             }
 
             const response = await fetch(`${apiUrl}/teacher/create-course`, {
@@ -186,6 +210,25 @@ function CreateCourse() {
                         />
                     </View>
 
+                    {/* Category */}
+                    <View className="mb-4">
+                        <Text className="mb-1 text-sm font-medium text-gray-700">
+                            Category*
+                        </Text>
+                        <TouchableOpacity
+                            className="rounded border border-gray-300 p-2"
+                            onPress={() => setShowCategoryModal(true)}
+                        >
+                            <Text
+                                className={
+                                    category ? 'text-black' : 'text-gray-500'
+                                }
+                            >
+                                {category || 'Select a category'}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+
                     {/* Price */}
                     <View className="mb-4">
                         <Text className="mb-1 text-sm font-medium text-gray-700">
@@ -211,6 +254,42 @@ function CreateCourse() {
                         {isUploading ? 'Uploading...' : 'Create Course'}
                     </Text>
                 </TouchableOpacity>
+
+                {/* Category Selection Modal */}
+                <Modal
+                    visible={showCategoryModal}
+                    animationType="slide"
+                    transparent={true}
+                    onRequestClose={() => setShowCategoryModal(false)}
+                >
+                    <View className="flex-1 justify-end bg-black/50">
+                        <View className="rounded-t-2xl bg-white p-4">
+                            <Text className="mb-4 text-lg font-bold">
+                                Select Category
+                            </Text>
+                            <ScrollView className="max-h-80">
+                                {categories.map(cat => (
+                                    <Pressable
+                                        key={cat}
+                                        className={`p-3 ${category === cat ? 'bg-indigo-100' : ''}`}
+                                        onPress={() => {
+                                            setCategory(cat);
+                                            setShowCategoryModal(false);
+                                        }}
+                                    >
+                                        <Text className="text-base">{cat}</Text>
+                                    </Pressable>
+                                ))}
+                            </ScrollView>
+                            <TouchableOpacity
+                                className="mt-4 rounded-lg border border-gray-300 p-3"
+                                onPress={() => setShowCategoryModal(false)}
+                            >
+                                <Text className="text-center">Cancel</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
             </ScrollView>
         </SafeAreaView>
     );

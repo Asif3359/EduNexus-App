@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react';
 import {
     Text,
@@ -7,47 +8,125 @@ import {
     FlatList,
     Image,
     SafeAreaView,
+    ActivityIndicator,
+    ScrollView,
 } from 'react-native';
-import coursesData from '@/assets/data/courseDetails.json';
 import { FontAwesome, Feather, MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import WebView from 'react-native-webview';
 import BottomNavigationBar from '../components/BottomNavigationBar';
+import { convertImageUrl } from '../components/convertImageUrl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_BASE_URL = 'http://10.0.2.2:8000/api';
+const baseuri = 'http://10.0.2.2:8000';
 
 export default function CourseScreen() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('All');
-    const [filteredCourses, setFilteredCourses] = useState(coursesData);
+    const [courses, setCourses] = useState<any[]>([]);
+    const [filteredCourses, setFilteredCourses] = useState<any[]>([]);
     const [categories, setCategories] = useState<string[]>(['All']);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
+    const [userLocation, setUserLocation] = useState<string | null>(null);
+
+    const getUserLocation = async () => {
+        const userLocation = await AsyncStorage.getItem('userLocation');
+        if (userLocation) {
+            setUserLocation(userLocation);
+        }
+    };
 
     useEffect(() => {
-        extractCategories();
-        filterCourses();
-    }, [searchQuery, selectedCategory]);
+        fetchAllData();
+        getUserLocation();
+    }, []);
 
-    const extractCategories = () => {
-        const uniqueCategories = Array.from(
-            new Set(coursesData.map(course => course.category))
-        );
-        setCategories(['All', ...uniqueCategories]);
+    useEffect(() => {
+        filterCourses();
+    }, [searchQuery, selectedCategory, courses]);
+
+    const fetchAllData = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const [coursesRes, categoriesRes] = await Promise.all([
+                fetch(`${API_BASE_URL}/courses/all`),
+                fetch(`${API_BASE_URL}/courses/categories`),
+            ]);
+
+            if (!coursesRes.ok || !categoriesRes.ok) {
+                throw new Error('Failed to fetch data');
+            }
+
+            const [coursesData, categoriesData] = await Promise.all([
+                coursesRes.json(),
+                categoriesRes.json(),
+            ]);
+
+            // Debug logs to verify data structure
+            console.log('Courses data:', coursesData);
+            console.log('Categories data:', categoriesData);
+
+            setCourses(coursesData);
+
+            // Process categories to ensure they're clean strings
+            const cleanedCategories = categoriesData
+                .map((cat: any) => (cat ? cat.toString().trim() : ''))
+                .filter((cat: string) => cat !== '');
+
+            setCategories(['All', ...cleanedCategories]);
+        } catch (err: unknown) {
+            console.error('Error fetching data:', err);
+            setError(
+                err instanceof Error ? err.message : 'An unknown error occurred'
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
     const filterCourses = () => {
-        let filtered = coursesData;
+        console.log('Filtering courses...');
+        console.log('Selected category:', selectedCategory);
 
+        let filtered = [...courses];
+
+        // Filter by category if not 'All'
         if (selectedCategory !== 'All') {
-            filtered = filtered.filter(
-                course => course.category === selectedCategory
-            );
+            filtered = filtered.filter(course => {
+                const courseCategory = course.category
+                    ? course.category.toString().trim().toLowerCase()
+                    : '';
+                const selectedCat = selectedCategory.trim().toLowerCase();
+                return courseCategory === selectedCat;
+            });
         }
 
+        // Filter by search query if provided
         if (searchQuery) {
-            filtered = filtered.filter(course =>
-                course.title.toLowerCase().includes(searchQuery.toLowerCase())
-            );
+            const query = searchQuery.toLowerCase();
+            filtered = filtered.filter(course => {
+                const title = course.title ? course.title.toLowerCase() : '';
+                const instructor = course.instructor
+                    ? course.instructor.toLowerCase()
+                    : '';
+                const description = course.description
+                    ? course.description.toLowerCase()
+                    : '';
+
+                return (
+                    title.includes(query) ||
+                    instructor.includes(query) ||
+                    description.includes(query)
+                );
+            });
         }
 
+        console.log('Filtered courses:', filtered);
         setFilteredCourses(filtered);
     };
 
@@ -59,53 +138,64 @@ export default function CourseScreen() {
     };
 
     const renderCourse = ({ item }: any) => (
-        <SafeAreaView className="mb-6 rounded-2xl border border-purple-100 bg-white p-4 shadow-xl">
-            {/* WebView instead of image */}
-            <View className="mb-3 overflow-hidden rounded-xl">
-                <WebView
-                    source={{ uri: item.modules[0].videos[0].url }}
-                    style={{ height: 200, width: '100%' }}
-                    allowsInlineMediaPlayback={true}
-                    mediaPlaybackRequiresUserAction={false}
-                    allowsFullscreenVideo={true}
-                    javaScriptEnabled={true}
+        <View className="mb-6 rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+            {/* Thumbnail Image */}
+            {item.thumbnail ? (
+                <Image
+                    source={{ uri: convertImageUrl(item.thumbnail, baseuri) }}
+                    className="mb-3 h-40 w-full rounded-xl"
+                    resizeMode="cover"
                 />
-            </View>
+            ) : (
+                <View className="mb-3 h-40 w-full items-center justify-center rounded-xl bg-gray-100">
+                    <Text className="text-gray-500">
+                        No thumbnail available
+                    </Text>
+                </View>
+            )}
 
             {/* Course Title */}
             <TouchableOpacity
                 onPress={() =>
                     router.push({
-                        pathname: '/user/courseDetails',
-                        params: { id: item.id },
+                        pathname: '/user/[location]/[id]',
+                        params: { location: userLocation || '', id: item.id },
                     })
                 }
             >
-                <Text className="mb-1 text-xl font-bold text-gray-900">
+                <Text
+                    className="mb-1 text-lg font-bold text-gray-900"
+                    numberOfLines={2}
+                >
                     {item.title}
                 </Text>
             </TouchableOpacity>
 
-            {/* Instructor */}
-            <TouchableOpacity onPress={() => handleAuthorPress(item.email)}>
-                <Text className="mb-2 text-sm text-purple-700">
-                    {item.instructor}
-                </Text>
-            </TouchableOpacity>
+            {/* Instructor and Location */}
+            <View className="mb-2 flex-row items-center justify-between">
+                <TouchableOpacity onPress={() => handleAuthorPress(item.email)}>
+                    <Text className="text-sm text-purple-600" numberOfLines={1}>
+                        {item.instructor}
+                    </Text>
+                </TouchableOpacity>
+                <Text className="text-xs text-gray-500">{item.location}</Text>
+            </View>
 
-            {/* Duration */}
+            {/* Category */}
             <View className="mb-2 flex-row items-center">
-                <Feather name="clock" size={14} color="#6b7280" />
+                <Feather name="tag" size={14} color="#6b7280" />
                 <Text className="ml-1 text-sm text-gray-600">
-                    {item.duration}
+                    {item.category}
                 </Text>
             </View>
 
             {/* Rating and Price */}
-            <View className="mb-4 flex-row items-center justify-between">
+            <View className="flex-row items-center justify-between">
                 <View className="flex-row items-center space-x-1">
-                    <FontAwesome name="star" size={14} color="#facc15" />
-                    <Text className="text-sm text-gray-800">{item.rating}</Text>
+                    <FontAwesome name="star" size={14} color="#f59e0b" />
+                    <Text className="text-sm text-gray-800">
+                        {item.rating || 'N/A'}
+                    </Text>
                 </View>
 
                 <View className="flex-row items-center space-x-1">
@@ -115,83 +205,133 @@ export default function CourseScreen() {
                         color="#9333ea"
                     />
                     <Text className="text-sm font-semibold text-purple-700">
-                        {item.price.toFixed(2)}
+                        ${Number(item.price || 0).toFixed(2)}
                     </Text>
                 </View>
             </View>
 
             {/* Buy Now Button */}
             <TouchableOpacity
+                className="mt-4 rounded-lg bg-purple-600 py-2.5"
                 onPress={() =>
                     router.push({
-                        pathname: '/paymentScreen',
-                        params: {
-                            courseId: item.id,
-                            courseTitle: item.title,
-                            courseImage: item.image,
-                            coursePrice: item.price,
-                        },
+                        pathname: '/user/[location]/[id]',
+                        params: { location: userLocation || '', id: item.id },
                     })
                 }
-                className="rounded-xl bg-purple-600 py-3 hover:bg-purple-700 active:bg-purple-800"
             >
-                <Text className="text-center text-base font-semibold text-white">
+                <Text className="text-center text-sm font-semibold text-white">
                     Buy Now
                 </Text>
             </TouchableOpacity>
-        </SafeAreaView>
+        </View>
     );
 
-    return (
-        <SafeAreaView className="flex-1 bg-gray-50 px-4 pt-6">
-            <Text className="mb-1 text-3xl font-bold text-gray-900">
-                Courses
-            </Text>
-            <Text className="mb-4 text-base text-gray-500">
-                Browse your learning path
-            </Text>
+    if (loading) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
+                <ActivityIndicator size="large" color="#9333ea" />
+                <Text className="mt-4 text-gray-700">Loading courses...</Text>
+            </SafeAreaView>
+        );
+    }
 
-            <View className="mb-4 flex-row items-center rounded-full bg-white px-4 py-2 shadow-sm">
-                <Feather name="search" size={18} color="#9ca3af" />
-                <TextInput
-                    placeholder="Search courses..."
-                    className="ml-2 flex-1 text-base text-gray-800"
-                    value={searchQuery}
-                    onChangeText={setSearchQuery}
-                />
+    if (error) {
+        return (
+            <SafeAreaView className="flex-1 items-center justify-center bg-gray-50">
+                <Text className="text-red-500">{error}</Text>
+                <TouchableOpacity
+                    className="mt-4 rounded-lg bg-purple-600 px-6 py-2.5"
+                    onPress={fetchAllData}
+                >
+                    <Text className="text-white">Retry</Text>
+                </TouchableOpacity>
+            </SafeAreaView>
+        );
+    }
+
+    return (
+        <SafeAreaView className="flex-1 bg-gray-50">
+            <View className="px-4 pt-4">
+                <Text className="text-2xl font-bold text-gray-900">
+                    Courses
+                </Text>
+                <Text className="mb-4 text-sm text-gray-500">
+                    Browse your learning path
+                </Text>
+
+                {/* Search Bar */}
+                <View className="mb-4 flex-row items-center rounded-full bg-white px-4 py-2 shadow-sm">
+                    <Feather name="search" size={16} color="#9ca3af" />
+                    <TextInput
+                        placeholder="Search courses..."
+                        className="ml-2 flex-1 text-sm text-gray-800"
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                        placeholderTextColor="#9ca3af"
+                    />
+                </View>
+
+                {/* Categories */}
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="mb-4"
+                    contentContainerStyle={{ paddingRight: 16 }}
+                >
+                    {categories.map(category => (
+                        <TouchableOpacity
+                            key={category}
+                            className={`mr-2 rounded-full border px-4 py-1.5 ${
+                                selectedCategory === category
+                                    ? 'border-purple-600 bg-purple-600'
+                                    : 'border-gray-300 bg-white'
+                            }`}
+                            onPress={() => setSelectedCategory(category)}
+                        >
+                            <Text
+                                className={`text-xs font-medium ${
+                                    selectedCategory === category
+                                        ? 'text-white'
+                                        : 'text-gray-800'
+                                }`}
+                            >
+                                {category}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
             </View>
 
-            <View className="mb-4 flex-row flex-wrap justify-start">
-                {categories.map(category => (
+            {/* Course List */}
+            {filteredCourses.length === 0 ? (
+                <View className="flex-1 items-center justify-center px-4">
+                    <Text className="text-gray-500">No courses found</Text>
                     <TouchableOpacity
-                        key={category}
-                        onPress={() => setSelectedCategory(category)}
-                        className={`mb-2 mr-2 rounded-full border px-4 py-1.5 ${
-                            selectedCategory === category
-                                ? 'border-purple-600 bg-purple-600'
-                                : 'border-gray-300 bg-white'
-                        }`}
+                        className="mt-2 rounded-lg bg-purple-100 px-4 py-2"
+                        onPress={() => {
+                            setSearchQuery('');
+                            setSelectedCategory('All');
+                        }}
                     >
-                        <Text
-                            className={`text-sm font-medium ${
-                                selectedCategory === category
-                                    ? 'text-white'
-                                    : 'text-gray-800'
-                            }`}
-                        >
-                            {category}
+                        <Text className="text-sm text-purple-700">
+                            Reset filters
                         </Text>
                     </TouchableOpacity>
-                ))}
-            </View>
+                </View>
+            ) : (
+                <FlatList
+                    data={filteredCourses}
+                    keyExtractor={item => item.id.toString()}
+                    renderItem={renderCourse}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{
+                        paddingHorizontal: 16,
+                        paddingBottom: 100,
+                    }}
+                />
+            )}
 
-            <FlatList
-                data={filteredCourses}
-                keyExtractor={item => item.id}
-                renderItem={renderCourse}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
-            />
             <BottomNavigationBar />
         </SafeAreaView>
     );
