@@ -28,6 +28,7 @@ function UserHome() {
             try {
                 setLoading(true);
                 const location = await AsyncStorage.getItem('userLocation');
+                console.log('location :', location);
                 setUserLocation(location || ''); // Handle null case by providing empty string default
                 // Fetch all data in parallel
                 const [suggestedRes, topRatedRes, topSellingRes] =
@@ -47,9 +48,9 @@ function UserHome() {
                     topSellingRes.json(),
                 ]);
 
-                // console.log('suggested :', suggested);
-                // console.log('topRated :', topRated);
-                // console.log('topSelling :', topSelling);
+                console.log('suggested :', suggested);
+                console.log('topRated :', topRated);
+                console.log('topSelling :', topSelling);
 
                 setSuggestedCourses(suggested);
                 setTopRatedCourses(topRated);

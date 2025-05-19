@@ -17,9 +17,7 @@ import WebView from 'react-native-webview';
 import BottomNavigationBar from '../components/BottomNavigationBar';
 import { convertImageUrl } from '../components/convertImageUrl';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const API_BASE_URL = 'http://10.0.2.2:8000/api';
-const baseuri = 'http://10.0.2.2:8000';
+import Constants from 'expo-constants';
 
 export default function CourseScreen() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -31,6 +29,8 @@ export default function CourseScreen() {
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
     const [userLocation, setUserLocation] = useState<string | null>(null);
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
+    const baseuri = (Constants.expoConfig as any).extra.API_BASE_URL;
 
     const getUserLocation = async () => {
         const userLocation = await AsyncStorage.getItem('userLocation');
@@ -54,8 +54,8 @@ export default function CourseScreen() {
             setError(null);
 
             const [coursesRes, categoriesRes] = await Promise.all([
-                fetch(`${API_BASE_URL}/courses/all`),
-                fetch(`${API_BASE_URL}/courses/categories`),
+                fetch(`${apiUrl}/courses/all`),
+                fetch(`${apiUrl}/courses/categories`),
             ]);
 
             if (!coursesRes.ok || !categoriesRes.ok) {
@@ -68,7 +68,10 @@ export default function CourseScreen() {
             ]);
 
             // Debug logs to verify data structure
-            console.log('Courses data:', coursesData);
+            console.log(
+                'Courses data teacher email:',
+                coursesData[0].teacherEmail
+            );
             console.log('Categories data:', categoriesData);
 
             setCourses(coursesData);
@@ -94,6 +97,7 @@ export default function CourseScreen() {
         console.log('Selected category:', selectedCategory);
 
         let filtered = [...courses];
+        console.log('Filtered courses:', filtered);
 
         // Filter by category if not 'All'
         if (selectedCategory !== 'All') {
@@ -159,7 +163,11 @@ export default function CourseScreen() {
                 onPress={() =>
                     router.push({
                         pathname: '/user/[location]/[id]',
-                        params: { location: userLocation || '', id: item.id },
+                        params: {
+                            location: userLocation || '',
+                            id: item.id,
+                            teacherEmail: item.teacherEmail,
+                        },
                     })
                 }
             >
@@ -216,7 +224,11 @@ export default function CourseScreen() {
                 onPress={() =>
                     router.push({
                         pathname: '/user/[location]/[id]',
-                        params: { location: userLocation || '', id: item.id },
+                        params: {
+                            location: userLocation || '',
+                            id: item.id,
+                            teacherEmail: item.teacherEmail,
+                        },
                     })
                 }
             >

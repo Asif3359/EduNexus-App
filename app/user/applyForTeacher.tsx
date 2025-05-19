@@ -78,6 +78,9 @@ function ApplyForTeacher() {
         try {
             const userId = await AsyncStorage.getItem('userId');
             const clientSecret = await AsyncStorage.getItem('clientSecret');
+            const location = await AsyncStorage.getItem('userLocation');
+            console.log('userId :', userId);
+            console.log('clientSecret :', clientSecret);
 
             const teacherResponse = await fetch(`${apiUrl}/apply-teacher`, {
                 method: 'POST',
@@ -87,13 +90,13 @@ function ApplyForTeacher() {
                 body: JSON.stringify({
                     userId,
                     experiences,
-                    location: 'Khulna',
+                    location: location,
                     paymentIntentId: clientSecret,
                 }),
             });
 
             const data = await teacherResponse.json();
-
+            console.log('data :', data);
             if (!teacherResponse.ok) {
                 throw new Error('Failed to submit teacher application');
             }

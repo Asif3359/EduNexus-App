@@ -29,6 +29,14 @@ export default function SignUpScreen() {
 
         if (email && password && fullName) {
             try {
+                // Array of possible locations
+                const locations = ['Dhaka', 'Rajsahi', 'Khulna'];
+                // Randomly select a location
+                const randomLocation =
+                    locations[Math.floor(Math.random() * locations.length)];
+
+                console.log(randomLocation);
+
                 const response = await fetch(`${apiUrl}/register`, {
                     method: 'POST',
                     headers: {
@@ -39,8 +47,8 @@ export default function SignUpScreen() {
                         name: fullName.trim(),
                         email: email.trim(),
                         password: password,
-                        role: 'student', // If your backend accepts this, or remove if unnecessary
-                        Location: 'Khulna',
+                        role: 'student',
+                        Location: randomLocation, // Using the randomly selected location
                     }),
                 });
 
@@ -133,19 +141,25 @@ export default function SignUpScreen() {
                     title="Apple"
                     iconName="apple"
                     color="black"
-                    onPress={() => {}}
+                    onPress={() => {
+                        console.log('Apple');
+                    }}
                 />
                 <SocialButton
                     title="Google"
                     iconName="google"
                     color="red"
-                    onPress={() => {}}
+                    onPress={() => {
+                        console.log('Google');
+                    }}
                 />
                 <SocialButton
                     title="Facebook"
                     iconName="facebook"
                     color="blue"
-                    onPress={() => {}}
+                    onPress={() => {
+                        console.log('Facebook');
+                    }}
                 />
             </View>
 

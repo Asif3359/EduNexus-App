@@ -136,17 +136,11 @@ function TeacherHome() {
         }
     };
 
-    const recentStudents = [
-        { id: 1, name: 'Alice Johnson', course: 'JavaScript Masterclass' },
-        { id: 2, name: 'Bob Smith', course: 'UI/UX Design Fundamentals' },
-        { id: 3, name: 'Charlie Brown', course: 'Advanced React Native' },
-    ];
-
     const stats = {
-        totalStudents: 126,
-        totalCourses: 3,
-        totalEarnings: 2450.5,
-        rating: 4.8,
+        totalStudents: teacher?.total_students || 0,
+        totalCourses: teacher?.total_courses || 0,
+        totalEarnings: teacher?.total_earnings || 0,
+        rating: teacher?.rating || 0,
     };
 
     const handleCourseList = async () => {

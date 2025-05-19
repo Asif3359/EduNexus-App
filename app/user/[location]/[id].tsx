@@ -9,7 +9,7 @@ import {
     ActivityIndicator,
     TouchableOpacity,
 } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Feather, FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -55,17 +55,17 @@ interface Video {
     updated_at: string;
     module_id: number;
 }
-
 export default function CourseDetailsScreen() {
-    const { location, id } = useLocalSearchParams<{
+    const { location, id, teacherEmail } = useLocalSearchParams<{
         location: string;
         id: string;
+        teacherEmail: string;
     }>();
 
-    const [course, setCourse] = useState<CourseDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [activeSections, setActiveSections] = useState<number[]>([]);
+    const [course, setCourse] = useState<CourseDetails | null>(null);
     const router = useRouter();
     const baseUrl = (Constants.expoConfig as any).extra.API_BASE_URL;
     const [isEnrolled, setIsEnrolled] = useState(false);
@@ -78,7 +78,11 @@ export default function CourseDetailsScreen() {
                     throw new Error('Invalid course reference');
 
                 setLoading(true);
-                const data = await fetchCourseDetails(location, id);
+                const data = await fetchCourseDetails(
+                    location,
+                    id,
+                    teacherEmail
+                );
                 setCourse(data as unknown as CourseDetails);
                 console.log(data);
             } catch (err) {
@@ -106,7 +110,8 @@ export default function CourseDetailsScreen() {
                 const response = await api.checkEnrollment(
                     course.id,
                     userId,
-                    location
+                    location,
+                    teacherEmail
                 );
                 console.log(response.is_enrolled);
                 setIsEnrolled(response.is_enrolled);
@@ -168,6 +173,18 @@ export default function CourseDetailsScreen() {
     return (
         <SafeAreaView className="flex-1 bg-white">
             <ScrollView className="flex-1">
+                <Stack.Screen
+                    options={{
+                        title: course?.title || 'Course Details', // Fallback if course not loaded
+                        headerStyle: {
+                            backgroundColor: '#f9fafb', // Light gray background
+                        },
+                        headerTintColor: '#9333ea', // Purple text color
+                        headerTitleStyle: {
+                            fontWeight: 'bold',
+                        },
+                    }}
+                />
                 {/* Course Thumbnail */}
                 {course.thumbnail && (
                     <Image

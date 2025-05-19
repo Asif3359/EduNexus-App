@@ -1,5 +1,6 @@
-const API_BASE_URL = 'http://10.0.2.2:8000/api';
+import Constants from 'expo-constants';
 
+const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 interface CourseDetails {
     id: string;
     title: string;
@@ -24,9 +25,12 @@ interface CourseDetails {
 
 export const fetchCourseDetails = async (
     location: string,
-    id: string
+    id: string,
+    teacherEmail: string
 ): Promise<CourseDetails> => {
-    const response = await fetch(`${API_BASE_URL}/courses/${location}/${id}`);
+    const response = await fetch(
+        `${apiUrl}/courses/${location}/${id}/${teacherEmail}`
+    );
 
     if (!response.ok) {
         throw new Error(

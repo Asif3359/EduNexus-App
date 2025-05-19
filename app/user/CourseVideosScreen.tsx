@@ -15,7 +15,7 @@ import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Feather } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { api } from '../services/api';
 
 interface Video {
@@ -304,84 +304,70 @@ export default function CourseVideosScreen() {
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
-                {/* Course Header */}
-                <View className="bg-white p-4 shadow-sm">
-                    <Image
-                        source={{ uri: course.thumbnail }}
-                        className="mb-3 h-40 w-full rounded-lg"
-                        resizeMode="cover"
+            <Stack.Screen
+                options={{
+                    title: activeVideo?.title,
+                    headerShown: true,
+                }}
+            />
+
+            {/* Video Player Section */}
+            {activeVideo && (
+                <View className="flex-1 bg-black">
+                    <WebView
+                        key={webViewKey}
+                        ref={webViewRef}
+                        allowsFullscreenVideo
+                        javaScriptEnabled
+                        allowsInlineMediaPlayback
+                        mediaPlaybackRequiresUserAction={false}
+                        domStorageEnabled
+                        originWhitelist={['*']}
+                        source={{ uri: activeVideo.video_url }}
+                        style={{ height: '100%', width: '100%' }}
+                        injectedJavaScript={injectedJS}
+                        onMessage={event => {
+                            const message = JSON.parse(event.nativeEvent.data);
+                            if (
+                                message.type === 'video_progress' &&
+                                message.progress >= 0.9
+                            ) {
+                                markVideoSeen(parseInt(message.videoId));
+                            }
+                        }}
+                        onLoadStart={() => setIsPlaying(false)}
+                        onLoadEnd={() => setIsPlaying(true)}
                     />
-                    <Text className="text-xl font-bold text-gray-900">
-                        {course.title}
-                    </Text>
-                    <Text className="mt-1 font-medium text-purple-600">
-                        ${course.price}
-                    </Text>
-                    <Text className="mt-2 text-gray-600">
-                        {course.description}
-                    </Text>
                 </View>
+            )}
 
-                {/* Video Player Section */}
+            {/* Main Content */}
+            <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+                {/* Video Information */}
                 {activeVideo && (
-                    <>
-                        <View className="mb-4 bg-black">
-                            <WebView
-                                key={webViewKey}
-                                ref={webViewRef}
-                                allowsFullscreenVideo
-                                javaScriptEnabled
-                                allowsInlineMediaPlayback
-                                mediaPlaybackRequiresUserAction={false}
-                                domStorageEnabled
-                                originWhitelist={['*']}
-                                source={{ uri: activeVideo.video_url }}
-                                style={{ height: playerHeight, width: '100%' }}
-                                injectedJavaScript={injectedJS}
-                                onMessage={event => {
-                                    const message = JSON.parse(
-                                        event.nativeEvent.data
-                                    );
-                                    if (
-                                        message.type === 'video_progress' &&
-                                        message.progress >= 0.9
-                                    ) {
-                                        markVideoSeen(
-                                            parseInt(message.videoId)
-                                        );
-                                    }
-                                }}
-                                onLoadStart={() => setIsPlaying(false)}
-                                onLoadEnd={() => setIsPlaying(true)}
+                    <View className="flex-1 border-b border-gray-200 bg-white p-5">
+                        <Text className="mb-1 text-sm font-medium text-purple-600">
+                            {activeModule?.title}
+                        </Text>
+                        <Text className="mb-2 text-xl font-bold text-gray-900">
+                            {activeVideo.title}
+                        </Text>
+                        <View className="flex-row items-center">
+                            <Feather
+                                name={isPlaying ? 'play' : 'pause'}
+                                size={16}
+                                color="#9333ea"
                             />
-                        </View>
-
-                        {/* Current Video Info */}
-                        <View className="mb-6 px-5">
-                            <Text className="mb-1 text-xs font-medium text-purple-600">
-                                {activeModule?.title}
+                            <Text className="ml-2 text-sm text-gray-500">
+                                {isPlaying ? 'Now Playing' : 'Paused'}
                             </Text>
-                            <Text className="text-lg font-bold text-gray-900">
-                                {activeVideo.title}
-                            </Text>
-                            <View className="mt-2 flex-row items-center">
-                                <Feather
-                                    name={isPlaying ? 'play' : 'pause'}
-                                    size={16}
-                                    color="#9333ea"
-                                />
-                                <Text className="ml-2 text-sm text-gray-500">
-                                    {isPlaying ? 'Now Playing' : 'Paused'}
-                                </Text>
-                            </View>
                         </View>
-                    </>
+                    </View>
                 )}
 
-                {/* Course Modules */}
-                <View className="rounded-t-3xl bg-white px-5 pb-10 pt-6 shadow-md">
-                    <Text className="mb-6 text-xl font-bold text-gray-900">
+                {/* Course Content */}
+                <View className="bg-white p-5">
+                    <Text className="mb-5 text-xl font-bold text-gray-900">
                         Course Content
                     </Text>
 
@@ -401,52 +387,51 @@ export default function CourseVideosScreen() {
                         return (
                             <View
                                 key={module.id}
-                                className={`mb-4 overflow-hidden rounded-xl ${isActive ? 'border border-purple-100 bg-purple-50' : 'border border-gray-100 bg-white'}`}
+                                className={`mb-4 overflow-hidden rounded-lg border ${isActive ? 'border-purple-200 bg-purple-50' : 'border-gray-200 bg-white'}`}
                             >
                                 <TouchableOpacity
                                     onPress={() => toggleSection(index)}
-                                    className={`flex-row items-center justify-between px-4 py-3 ${isActive ? 'bg-purple-100' : 'bg-white'}`}
+                                    className={`flex-row items-center justify-between p-4 ${isActive ? 'bg-purple-100' : 'bg-white'}`}
                                 >
-                                    <View className="flex-row items-center">
-                                        <View className="mr-3 flex h-8 w-8 items-center justify-center rounded-full bg-purple-50">
+                                    <View className="flex-1 flex-row items-center">
+                                        <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-purple-100">
                                             <Text className="font-bold text-purple-700">
                                                 {index + 1}
                                             </Text>
                                         </View>
-                                        <View>
-                                            <Text className="text-base font-semibold text-gray-800">
+                                        <View className="flex-1">
+                                            <Text className="font-semibold text-gray-800">
                                                 {module.title}
                                             </Text>
                                             <Text className="mt-1 text-xs text-gray-500">
                                                 {completedVideos} of{' '}
                                                 {module.videos.length} videos
-                                                completed
                                             </Text>
                                         </View>
                                     </View>
-                                    <View className="flex-row items-center">
-                                        <View className="mr-3 h-1 w-16 rounded-full bg-gray-200">
+                                    <View className="ml-2 flex-row items-center">
+                                        <View className="mr-2 h-1.5 w-12 rounded-full bg-gray-200">
                                             <View
-                                                className="h-1 rounded-full bg-purple-600"
+                                                className="h-1.5 rounded-full bg-purple-600"
                                                 style={{
                                                     width: `${progress}%`,
                                                 }}
                                             />
                                         </View>
-                                        <Icon
+                                        <Feather
                                             name={
                                                 isActive
                                                     ? 'chevron-up'
                                                     : 'chevron-down'
                                             }
-                                            size={14}
-                                            color="#6B7280"
+                                            size={18}
+                                            color="#6b7280"
                                         />
                                     </View>
                                 </TouchableOpacity>
 
                                 <Collapsible collapsed={!isActive}>
-                                    <View className="px-2 py-2">
+                                    <View className="px-2 py-1">
                                         {module.videos.map(video => {
                                             const isSeen = seenVideos.includes(
                                                 video.id
@@ -463,9 +448,11 @@ export default function CourseVideosScreen() {
                                                             module
                                                         )
                                                     }
-                                                    className={`my-1 flex-row items-center rounded-lg px-3 py-3 ${isActiveVideo ? 'bg-purple-100' : 'bg-white'}`}
+                                                    className={`my-1.5 flex-row items-center rounded-lg p-3 ${isActiveVideo ? 'bg-purple-100' : 'bg-white'}`}
                                                 >
-                                                    <View className="mr-3 flex h-8 w-8 items-center justify-center rounded-full border border-purple-200 bg-white">
+                                                    <View
+                                                        className={`mr-3 h-8 w-8 items-center justify-center rounded-full ${isActiveVideo ? 'bg-purple-200' : 'bg-gray-100'}`}
+                                                    >
                                                         <Feather
                                                             name={
                                                                 isActiveVideo
@@ -480,26 +467,25 @@ export default function CourseVideosScreen() {
                                                             }
                                                         />
                                                     </View>
-                                                    <View className="flex-1">
-                                                        <Text
-                                                            className={`text-sm font-medium ${isSeen ? 'text-gray-600' : 'text-gray-800'}`}
-                                                        >
-                                                            {video.title}
-                                                        </Text>
-                                                    </View>
-                                                    {isSeen ? (
-                                                        <Feather
-                                                            name="check-circle"
-                                                            size={16}
-                                                            color="#10b981"
-                                                        />
-                                                    ) : (
-                                                        <Feather
-                                                            name="circle"
-                                                            size={16}
-                                                            color="#d1d5db"
-                                                        />
-                                                    )}
+                                                    <Text
+                                                        className={`flex-1 text-sm ${isSeen ? 'text-gray-500' : 'text-gray-700'} ${isActiveVideo ? 'font-semibold' : 'font-medium'}`}
+                                                        numberOfLines={2}
+                                                    >
+                                                        {video.title}
+                                                    </Text>
+                                                    <Feather
+                                                        name={
+                                                            isSeen
+                                                                ? 'check-circle'
+                                                                : 'circle'
+                                                        }
+                                                        size={16}
+                                                        color={
+                                                            isSeen
+                                                                ? '#10b981'
+                                                                : '#e5e7eb'
+                                                        }
+                                                    />
                                                 </TouchableOpacity>
                                             );
                                         })}

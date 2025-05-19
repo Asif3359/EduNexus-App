@@ -51,11 +51,12 @@ export const api = {
     async checkEnrollment(
         courseId: string,
         studentId: string,
-        location: string
+        location: string,
+        teacherEmail: string
     ) {
         try {
             const response = await fetch(
-                `${API_URL}/enrollments/check/${courseId}?student_id=${studentId}&location=${location}`,
+                `${API_URL}/enrollments/check/${courseId}?student_id=${studentId}&location=${location}&teacher_email=${teacherEmail}`,
                 {
                     method: 'GET',
                     headers: {
@@ -79,6 +80,7 @@ export const api = {
             }
 
             const data = await response.json();
+            console.log(data);
             return data;
         } catch (error) {
             console.error('Failed to check enrollment:', error);

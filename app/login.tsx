@@ -28,13 +28,24 @@ export default function LoginScreen() {
 
         if (email && password) {
             try {
+                const locationResponse = await axios.get(
+                    `${apiUrl}/get-location/${email}`
+                );
+
+                if (!locationResponse.data || !locationResponse.data.location) {
+                    throw new Error('Could not retrieve user location');
+                }
+
+                console.log('User location:', locationResponse.data.location);
+
+                // 2. Proceed with login using the retrieved location
                 const response = await axios.post(
                     `${apiUrl}/login`,
                     {
                         email: email,
                         password: password,
-                        remember: remember, // Send remember me state
-                        Location: 'Khulna', // If your backend accepts this, or remove if unnecessary
+                        remember: remember,
+                        Location: locationResponse.data.location,
                     },
                     {
                         headers: {
