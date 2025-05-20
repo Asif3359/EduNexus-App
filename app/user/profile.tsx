@@ -10,26 +10,26 @@ import {
     Linking,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import BottomNavigationBar from '../components/BottomNavigationBar';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Constants from 'expo-constants';
+import BottomNavigationBar from '../components/BottomNavigationBar';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
-    const [student, setStudent] = useState<any>(null);
+    const [teacher, setTeacher] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
     useEffect(() => {
-        const fetchStudent = async () => {
+        const fetchTeacherProfile = async () => {
             try {
                 const userId = await AsyncStorage.getItem('userId');
                 const userLocation = await AsyncStorage.getItem('userLocation');
-
                 if (!userId) {
-                    Alert.alert('Error', 'Missing user ID.');
+                    router.push('/login');
                     setLoading(false);
                     return;
                 }
@@ -46,10 +46,12 @@ export default function ProfileScreen() {
                 );
 
                 if (response.data.success) {
-                    setStudent(response.data.data);
+                    setTeacher(response.data.data);
                 } else {
-                    console.log('Profile fetch error:', response.data.message);
-                    router.push('/user/studentProfilesetup');
+                    Alert.alert(
+                        'Error',
+                        response.data.message || 'Failed to fetch profile.'
+                    );
                 }
             } catch (error) {
                 console.error('Profile fetch error:', error);
@@ -62,7 +64,7 @@ export default function ProfileScreen() {
             }
         };
 
-        fetchStudent();
+        fetchTeacherProfile();
     }, []);
 
     const handleLogout = async () => {
@@ -91,170 +93,197 @@ export default function ProfileScreen() {
         router.push('/user/studentProfilesetup');
     };
 
+    const handleGoToHome = () => {
+        router.push('/user');
+    };
+
+    const handleGoToCourses = () => {
+        router.push('/user/cource');
+    };
+
+    const handleGoToSchedule = () => {
+        router.push('/user/schedule');
+    };
+
+    const handleGoToMyCourses = () => {
+        router.push('/user/myCourses');
+    };
+
+    const handleGoToAnalytics = () => {
+        router.push('/user/analytics');
+    };
+    const handleApplyForTeacher = async () => {
+        router.push('/payment/paymentScreen');
+    };
+
     if (loading) {
         return (
-            <SafeAreaView className="flex-1 items-center justify-center">
+            <SafeAreaView className="flex-1 items-center justify-center bg-white">
                 <ActivityIndicator size="large" color="#6D28D9" />
             </SafeAreaView>
         );
     }
 
-    if (!student) {
+    if (!teacher) {
         return (
-            <SafeAreaView className="flex-1 items-center justify-center">
-                <Text className="font-semibold text-red-600">
-                    Student not found.
+            <SafeAreaView className="flex-1 items-center justify-center bg-white">
+                <Text className="text-lg font-semibold text-red-600">
+                    Teacher not found
                 </Text>
             </SafeAreaView>
         );
     }
 
-    const handleApplyForTeacher = async () => {
-        router.push('/payment/paymentScreen');
-    };
-
     return (
         <SafeAreaView className="flex-1 bg-white">
-            <ScrollView className="p-4">
-                {/* Profile Image and Basic Info */}
-                <View className="mb-4 items-center rounded-lg bg-gray-200 py-4">
+            <ScrollView
+                className="px-4 py-4"
+                contentContainerStyle={{ paddingBottom: 80 }}
+            >
+                {/* Profile Header */}
+                <View className="mb-6 items-center">
                     <Image
                         source={{
                             uri:
-                                student.student_profile?.profile_picture ||
+                                teacher.student_profile?.profile_picture ||
                                 'https://raw.githubusercontent.com/Asif3359/Asif3359/refs/heads/main/img/10786.jpg',
                         }}
-                        className="h-24 w-24 rounded-full border-2 border-gray-300 bg-gray-500"
-                        alt="Profile Picture"
+                        className="h-32 w-32 rounded-full border-4 border-gray-100"
                     />
-                    <Text className="mt-2 text-xl font-bold text-gray-800">
-                        {student.name}
+                    <Text className="mt-4 text-2xl font-bold text-gray-800">
+                        {teacher.name}
                     </Text>
-                    <Text className="text-gray-500">{student.email}</Text>
-                    <Text className="text-gray-500">
-                        {student.student_profile?.mobile}
+                    <Text className="mt-1 text-base text-gray-500">
+                        {teacher.email}
                     </Text>
-                    {/* Bio */}
-                    {student.student_profile?.bio && (
-                        <Text className="rounded-lg bg-gray-200 p-4 font-semibold italic text-gray-600">
-                            "{student.student_profile.bio}"
-                        </Text>
-                    )}
+                    <Text className="mt-1 text-base text-gray-500">
+                        {teacher.student_profile?.mobile || 'No mobile number'}
+                    </Text>
                 </View>
 
-                {/* Education */}
-                {student.educations?.length > 0 && (
-                    <View className="mb-4">
-                        <Text className="mb-1 text-lg font-semibold text-gray-800">
-                            Education
-                        </Text>
-                        {student.educations.map((edu: any, index: number) => (
-                            <View
-                                key={index}
-                                className="mb-2 rounded-md bg-gray-100 p-3"
-                            >
-                                <Text className="font-semibold text-gray-700">
-                                    {edu.degree}
-                                </Text>
-                                <Text className="text-sm text-gray-500">
-                                    {edu.institution}
-                                </Text>
-                                <Text className="text-xs text-gray-400">
-                                    Year: {edu.year}
-                                </Text>
-                            </View>
-                        ))}
-                    </View>
-                )}
-
-                {/* Skills */}
-                {student.skills?.length > 0 && (
-                    <View className="mb-4">
-                        <Text className="mb-1 text-lg font-semibold text-gray-800">
-                            Skills
-                        </Text>
-                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
-                            {student.skills.map((skill: any, index: number) => (
-                                <Text
-                                    key={index}
-                                    className="rounded-full bg-purple-200 px-3 py-1 text-sm text-purple-800"
-                                >
-                                    {skill.skill_name}
-                                </Text>
-                            ))}
-                        </View>
-                    </View>
-                )}
-
-                {/* Interests */}
-                {student.interests?.length > 0 && (
-                    <View className="mb-4">
-                        <Text className="mb-1 text-lg font-semibold text-gray-800">
-                            Interests
-                        </Text>
-                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
-                            {student.interests.map(
-                                (interest: any, index: number) => (
-                                    <Text
-                                        key={index}
-                                        className="rounded-full bg-green-200 px-3 py-1 text-sm text-green-800"
-                                    >
-                                        {interest.interest_name}
-                                    </Text>
-                                )
-                            )}
-                        </View>
-                    </View>
-                )}
-
-                {/* Social Links */}
-                {student.social_links?.length > 0 && (
-                    <View className="mb-4">
-                        <Text className="mb-1 text-lg font-semibold text-gray-800">
-                            Social Links
-                        </Text>
-                        <View className="flex-row flex-wrap gap-2 rounded-lg bg-gray-100 p-3">
-                            {student.social_links.map(
-                                (link: any, index: number) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        onPress={() =>
-                                            Linking.openURL(link.social_link)
-                                        }
-                                    >
-                                        <Text className="mb-1 text-blue-600 underline">
-                                            {link.social_link}
-                                        </Text>
-                                    </TouchableOpacity>
-                                )
-                            )}
-                        </View>
-                    </View>
-                )}
-                <TouchableOpacity
-                    className="mt-2 items-center rounded-lg bg-blue-500 py-3"
-                    onPress={handleSetupProfile}
-                >
-                    <Text className="font-semibold text-white">
-                        Setup Profile
+                {/* Bio Section */}
+                <View className="mb-6 rounded-xl p-4">
+                    <Text className="text-start italic text-gray-600">
+                        "{teacher.student_profile?.bio || 'No bio provided'}"
                     </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    className="mt-4 items-center rounded-lg bg-green-500 py-3"
-                    onPress={handleApplyForTeacher}
-                >
-                    <Text className="font-semibold text-white">
-                        Apply for teacher
-                    </Text>
-                </TouchableOpacity>
-                {/* Logout Button */}
-                <TouchableOpacity
-                    className="mb-20 mt-4 items-center rounded-lg bg-red-500 py-3"
-                    onPress={handleLogout}
-                >
-                    <Text className="font-semibold text-white">Logout</Text>
-                </TouchableOpacity>
+                </View>
+
+                {/* Action Buttons */}
+                <View className="space-y-2">
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={() => router.push('/user/profileDetails')}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            See profile details
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleSetupProfile}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            Set up profile
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleGoToHome}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            Go to home
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleGoToCourses}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            Go to course
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleGoToSchedule}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            Go to schedule
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleGoToMyCourses}
+                    >
+                        <Text className="text-base font-medium text-gray-800">
+                            My Courses
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-gray-200 bg-white p-4"
+                        onPress={handleApplyForTeacher}
+                    >
+                        <Text className="text-base font-medium text-green-600">
+                            Apply for teacher
+                        </Text>
+                        <Ionicons
+                            name="chevron-forward"
+                            size={20}
+                            color="#9ca3af"
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        className="mb-3 flex-row items-center justify-between rounded-lg border border-red-200 bg-white p-4"
+                        onPress={handleLogout}
+                    >
+                        <Text className="text-base font-medium text-red-600">
+                            Logout
+                        </Text>
+                        <Ionicons
+                            name="log-out-outline"
+                            size={20}
+                            color="#dc2626"
+                        />
+                    </TouchableOpacity>
+                </View>
             </ScrollView>
+
             <BottomNavigationBar />
         </SafeAreaView>
     );

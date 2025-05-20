@@ -1,369 +1,375 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
+    View,
     Text,
     TextInput,
     TouchableOpacity,
-    View,
+    ScrollView,
+    SafeAreaView,
     Alert,
+    Image,
+    ActivityIndicator,
+    StyleSheet,
 } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { useRouter } from 'expo-router';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import axios from 'axios';
+import ProfilePictureUploader from '../components/ProfilePictureUploader';
 
-function CreateCourse() {
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
-    const [modules, setModules] = useState([
-        { title: '', videos: [{ title: '', url: '' }] },
+function TeacherProfileScreen() {
+    const router = useRouter();
+    const [activeTab, setActiveTab] = useState('setup'); // 'setup' or 'info'
+    const [skills, setSkills] = useState(['']);
+    const [interests, setInterests] = useState(['']);
+    const [socialLinks, setSocialLinks] = useState(['']);
+    const [educationList, setEducationList] = useState([
+        { degree: '', institution: '', year: '', description: '' },
     ]);
-    const [liveClasses, setLiveClasses] = useState([
-        { title: '', schedule: '', duration: '', link: '' },
-    ]);
+    const [teacher, setTeacher] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [profilePicture, setProfilePicture] = useState('');
+    const [mobile, setMobile] = useState('');
+    const [bio, setBio] = useState('');
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
 
-    const addModule = () => {
-        setModules([
-            ...modules,
-            { title: '', videos: [{ title: '', url: '' }] },
-        ]);
-    };
+    useEffect(() => {
+        fetchTeacherProfile();
+    }, []);
 
-    const removeModule = (index: number) => {
-        if (modules.length > 1) {
-            const updatedModules = [...modules];
-            updatedModules.splice(index, 1);
-            setModules(updatedModules);
+    const fetchTeacherProfile = async () => {
+        try {
+            const userId = await AsyncStorage.getItem('userId');
+            const userLocation = await AsyncStorage.getItem('userLocation');
+            if (!userId) {
+                Alert.alert('Error', 'Missing user ID.');
+                setLoading(false);
+                return;
+            }
+
+            const response = await axios.get(
+                `${apiUrl}/teacher/profile/${userId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                        Location: userLocation,
+                    },
+                }
+            );
+
+            if (response.data.success) {
+                setTeacher(response.data.data);
+                setSkills(
+                    response.data.data.skills?.map(
+                        (skill: { skill_name: any }) => skill.skill_name
+                    ) || ['']
+                );
+                setInterests(
+                    response.data.data.interests?.map(
+                        (interest: { interest_name: any }) =>
+                            interest.interest_name
+                    ) || ['']
+                );
+                setSocialLinks(
+                    response.data.data.social_links?.map(
+                        (link: { social_link: any }) => link.social_link
+                    ) || ['']
+                );
+                setEducationList(
+                    response.data.data.educations?.length > 0
+                        ? response.data.data.educations.map((edu: any) => ({
+                              degree: edu.degree || '',
+                              institution: edu.institution || '',
+                              year: edu.year?.toString() || '',
+                              description: edu.description || '',
+                          }))
+                        : [
+                              {
+                                  degree: '',
+                                  institution: '',
+                                  year: '',
+                                  description: '',
+                              },
+                          ]
+                );
+                setProfilePicture(
+                    response.data.data.teacher_profile?.profile_picture || ''
+                );
+                setMobile(response.data.data.teacher_profile?.mobile || '');
+                setBio(response.data.data.teacher_profile?.bio || '');
+            }
+        } catch (error) {
+            console.error('Profile fetch error:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const addVideoToModule = (moduleIndex: number) => {
-        const updatedModules = [...modules];
-        updatedModules[moduleIndex].videos.push({ title: '', url: '' });
-        setModules(updatedModules);
+    const handleLogout = async () => {
+        await AsyncStorage.clear();
+        router.replace('/login');
     };
 
-    const removeVideoFromModule = (moduleIndex: number, videoIndex: number) => {
-        const updatedModules = [...modules];
-        if (updatedModules[moduleIndex].videos.length > 1) {
-            updatedModules[moduleIndex].videos.splice(videoIndex, 1);
-            setModules(updatedModules);
-        }
-    };
+    // ... [keep all your existing handler functions] ...
 
-    const addLiveClass = () => {
-        setLiveClasses([
-            ...liveClasses,
-            { title: '', schedule: '', duration: '', link: '' },
-        ]);
-    };
+    const renderProfileInfo = () => (
+        <View className="p-4">
+            <View className="mb-6 items-center">
+                {profilePicture ? (
+                    <Image
+                        source={{ uri: profilePicture }}
+                        className="h-32 w-32 rounded-full"
+                    />
+                ) : (
+                    <View className="h-32 w-32 items-center justify-center rounded-full bg-gray-200">
+                        <Ionicons name="person" size={48} color="gray" />
+                    </View>
+                )}
+                <Text className="mt-2 text-xl font-bold">
+                    {teacher?.name || 'Teacher Name'}
+                </Text>
+                <Text className="text-gray-600">{teacher?.email || ''}</Text>
+            </View>
 
-    const removeLiveClass = (index: number) => {
-        if (liveClasses.length > 1) {
-            const updatedLiveClasses = [...liveClasses];
-            updatedLiveClasses.splice(index, 1);
-            setLiveClasses(updatedLiveClasses);
-        }
-    };
+            <View className="mb-6">
+                <Text className="mb-2 text-lg font-bold">About</Text>
+                <Text className="text-gray-700">
+                    {bio || 'No bio provided'}
+                </Text>
+            </View>
 
-    const handleSubmit = () => {
-        // Validate form data
-        if (!title.trim() || !description.trim() || !price.trim()) {
-            Alert.alert('Error', 'Please fill in all required fields');
-            return;
-        }
+            <View className="mb-6">
+                <Text className="mb-2 text-lg font-bold">Contact</Text>
+                <Text className="text-gray-700">
+                    {mobile || 'No mobile provided'}
+                </Text>
+            </View>
 
-        // Prepare course data
-        const courseData = {
-            title,
-            description,
-            price: parseFloat(price),
-            modules: modules.map(module => ({
-                title: module.title,
-                videos: module.videos.filter(
-                    video => video.title.trim() && video.url.trim()
-                ),
-            })),
-            liveClasses: liveClasses.filter(
-                lc => lc.title.trim() && lc.schedule.trim() && lc.link.trim()
-            ),
-        };
+            <View className="mb-6">
+                <Text className="mb-2 text-lg font-bold">Skills</Text>
+                <View className="flex-row flex-wrap">
+                    {skills.filter(s => s.trim()).length > 0 ? (
+                        skills
+                            .filter(s => s.trim())
+                            .map((skill, index) => (
+                                <View
+                                    key={index}
+                                    className="mb-2 mr-2 rounded-full bg-purple-100 px-3 py-1"
+                                >
+                                    <Text className="text-purple-800">
+                                        {skill}
+                                    </Text>
+                                </View>
+                            ))
+                    ) : (
+                        <Text className="text-gray-500">No skills added</Text>
+                    )}
+                </View>
+            </View>
 
-        // Here you would typically send the data to your backend
-        console.log('Course data:', courseData);
-        Alert.alert('Success', 'Course created successfully!');
-        // Reset form or navigate away
-    };
+            <View className="mb-6">
+                <Text className="mb-2 text-lg font-bold">Education</Text>
+                {educationList.filter(e => e.degree.trim()).length > 0 ? (
+                    educationList
+                        .filter(e => e.degree.trim())
+                        .map((edu, index) => (
+                            <View
+                                key={index}
+                                className="mb-4 border-b border-gray-100 pb-4"
+                            >
+                                <Text className="font-semibold">
+                                    {edu.degree}
+                                </Text>
+                                <Text className="text-gray-600">
+                                    {edu.institution}
+                                </Text>
+                                <Text className="text-sm text-gray-500">
+                                    {edu.year}
+                                </Text>
+                                <Text className="mt-1 text-gray-700">
+                                    {edu.description}
+                                </Text>
+                            </View>
+                        ))
+                ) : (
+                    <Text className="text-gray-500">No education added</Text>
+                )}
+            </View>
+        </View>
+    );
+
+    const renderSetupProfile = () => (
+        <ScrollView className="px-4 py-2">
+            {/* Profile Picture */}
+            <View className="mb-6 items-center">
+                <ProfilePictureUploader
+                    onImageSelected={setProfilePicture}
+                    initialImageUrl={profilePicture}
+                />
+            </View>
+
+            {/* Mobile Number */}
+            <View className="mb-4">
+                <Text className="mb-1 text-sm font-medium text-gray-700">
+                    Mobile
+                </Text>
+                <TextInput
+                    className="rounded-lg border border-gray-300 px-4 py-3"
+                    placeholder="e.g. 017xxxxxxxx"
+                    keyboardType="phone-pad"
+                    value={mobile}
+                    onChangeText={setMobile}
+                />
+            </View>
+
+            {/* Bio */}
+            <View className="mb-4">
+                <Text className="mb-1 text-sm font-medium text-gray-700">
+                    Bio
+                </Text>
+                <TextInput
+                    className="h-24 rounded-lg border border-gray-300 px-4 py-3"
+                    multiline
+                    placeholder="Tell us about yourself..."
+                    value={bio}
+                    onChangeText={setBio}
+                />
+            </View>
+
+            {/* Skills */}
+            <View className="mb-4">
+                <Text className="mb-1 text-sm font-medium text-gray-700">
+                    Skills
+                </Text>
+                {skills.map((skill, index) => (
+                    <View key={index} className="mb-2">
+                        <TextInput
+                            className="rounded-lg border border-gray-300 px-4 py-2"
+                            placeholder="e.g, HTML"
+                            value={skill}
+                            onChangeText={text =>
+                                handleSkillChange(text, index)
+                            }
+                        />
+                    </View>
+                ))}
+                <TouchableOpacity
+                    onPress={() => setSkills([...skills, ''])}
+                    className="flex-row items-center justify-center rounded-lg border border-purple-100 bg-purple-50 py-2"
+                >
+                    <Ionicons name="add" size={18} color="#9333ea" />
+                    <Text className="ml-1 text-purple-700">Add Skill</Text>
+                </TouchableOpacity>
+            </View>
+
+            {/* ... [similar styling for other sections] ... */}
+
+            {/* Submit Button */}
+            <TouchableOpacity
+                onPress={handleSubmit}
+                className="mb-10 mt-6 rounded-lg bg-purple-600 py-3"
+            >
+                <Text className="text-center font-semibold text-white">
+                    Save Profile
+                </Text>
+            </TouchableOpacity>
+        </ScrollView>
+    );
 
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView className="p-4">
-                <Text className="mb-6 mt-4 text-center text-3xl font-bold text-indigo-700">
-                    Create New Course
-                </Text>
-
-                {/* Basic Course Information */}
-                <View className="mb-6 rounded-lg bg-white p-4 shadow">
-                    <Text className="mb-2 text-lg font-semibold text-gray-800">
-                        Course Details
-                    </Text>
-
-                    <View className="mb-4">
-                        <Text className="mb-1 text-sm font-medium text-gray-700">
-                            Title*
-                        </Text>
-                        <TextInput
-                            className="rounded border border-gray-300 p-2"
-                            placeholder="Course Title"
-                            value={title}
-                            onChangeText={setTitle}
-                        />
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="mb-1 text-sm font-medium text-gray-700">
-                            Description*
-                        </Text>
-                        <TextInput
-                            className="textAlignVertical='top' h-24 rounded border border-gray-300 p-2"
-                            placeholder="Course Description"
-                            multiline
-                            value={description}
-                            onChangeText={setDescription}
-                        />
-                    </View>
-
-                    <View className="mb-4">
-                        <Text className="mb-1 text-sm font-medium text-gray-700">
-                            Price (USD)*
-                        </Text>
-                        <TextInput
-                            className="rounded border border-gray-300 p-2"
-                            placeholder="0.00"
-                            keyboardType="numeric"
-                            value={price}
-                            onChangeText={setPrice}
-                        />
-                    </View>
+            {/* Header */}
+            <View className="bg-white shadow-sm">
+                <View className="flex-row items-center justify-between border-b border-gray-100 p-4">
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Ionicons name="arrow-back" size={24} color="#6b7280" />
+                    </TouchableOpacity>
+                    <Text className="text-xl font-bold">Teacher Profile</Text>
+                    <View style={{ width: 24 }} /> {/* Spacer for alignment */}
                 </View>
 
-                {/* Modules Section */}
-                <View className="mb-6 rounded-lg bg-white p-4 shadow">
-                    <View className="mb-3 flex-row items-center justify-between">
-                        <Text className="text-lg font-semibold text-gray-800">
-                            Course Modules
+                {/* Profile Tabs */}
+                <View className="flex-row border-b border-gray-100">
+                    <TouchableOpacity
+                        className={`flex-1 items-center py-3 ${activeTab === 'info' ? 'border-b-2 border-purple-600' : ''}`}
+                        onPress={() => setActiveTab('info')}
+                    >
+                        <Text
+                            className={`font-medium ${activeTab === 'info' ? 'text-purple-600' : 'text-gray-600'}`}
+                        >
+                            Profile Info
                         </Text>
-                        <TouchableOpacity
-                            className="rounded bg-indigo-100 px-3 py-1"
-                            onPress={addModule}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className={`flex-1 items-center py-3 ${activeTab === 'setup' ? 'border-b-2 border-purple-600' : ''}`}
+                        onPress={() => setActiveTab('setup')}
+                    >
+                        <Text
+                            className={`font-medium ${activeTab === 'setup' ? 'text-purple-600' : 'text-gray-600'}`}
                         >
-                            <Text className="text-indigo-700">
-                                + Add Module
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {modules.map((module, moduleIndex) => (
-                        <View
-                            key={moduleIndex}
-                            className="mb-4 border-b border-gray-200 pb-4"
-                        >
-                            <View className="mb-2 flex-row items-center justify-between">
-                                <Text className="text-sm font-medium text-gray-700">
-                                    Module {moduleIndex + 1}
-                                </Text>
-                                {modules.length > 1 && (
-                                    <TouchableOpacity
-                                        className="rounded bg-red-100 px-2 py-1"
-                                        onPress={() =>
-                                            removeModule(moduleIndex)
-                                        }
-                                    >
-                                        <Text className="text-xs text-red-600">
-                                            Remove
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-
-                            <View className="mb-3">
-                                <TextInput
-                                    className="mb-2 rounded border border-gray-300 p-2"
-                                    placeholder={`Module ${moduleIndex + 1} Title`}
-                                    value={module.title}
-                                    onChangeText={text => {
-                                        const updatedModules = [...modules];
-                                        updatedModules[moduleIndex].title =
-                                            text;
-                                        setModules(updatedModules);
-                                    }}
-                                />
-                            </View>
-
-                            <Text className="mb-2 text-sm font-medium text-gray-700">
-                                Videos
-                            </Text>
-
-                            {module.videos.map((video, videoIndex) => (
-                                <View
-                                    key={videoIndex}
-                                    className="mb-3 ml-2 border-l-2 border-indigo-200 pl-2"
-                                >
-                                    <View className="mb-1 flex-row items-center justify-between">
-                                        <Text className="text-xs text-gray-600">
-                                            Video {videoIndex + 1}
-                                        </Text>
-                                        {module.videos.length > 1 && (
-                                            <TouchableOpacity
-                                                className="rounded bg-red-100 px-1 py-0.5"
-                                                onPress={() =>
-                                                    removeVideoFromModule(
-                                                        moduleIndex,
-                                                        videoIndex
-                                                    )
-                                                }
-                                            >
-                                                <Text className="text-xs text-red-600">
-                                                    Remove
-                                                </Text>
-                                            </TouchableOpacity>
-                                        )}
-                                    </View>
-
-                                    <TextInput
-                                        className="mb-2 rounded border border-gray-300 p-2"
-                                        placeholder="Video Title"
-                                        value={video.title}
-                                        onChangeText={text => {
-                                            const updatedModules = [...modules];
-                                            updatedModules[moduleIndex].videos[
-                                                videoIndex
-                                            ].title = text;
-                                            setModules(updatedModules);
-                                        }}
-                                    />
-
-                                    <TextInput
-                                        className="rounded border border-gray-300 p-2"
-                                        placeholder="Video URL"
-                                        value={video.url}
-                                        onChangeText={text => {
-                                            const updatedModules = [...modules];
-                                            updatedModules[moduleIndex].videos[
-                                                videoIndex
-                                            ].url = text;
-                                            setModules(updatedModules);
-                                        }}
-                                    />
-                                </View>
-                            ))}
-
-                            <TouchableOpacity
-                                className="mt-2 self-start rounded bg-indigo-100 px-3 py-1"
-                                onPress={() => addVideoToModule(moduleIndex)}
-                            >
-                                <Text className="text-sm text-indigo-700">
-                                    + Add Video
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
-                    ))}
-                </View>
-
-                {/* Live Classes Section */}
-                <View className="mb-6 rounded-lg bg-white p-4 shadow">
-                    <View className="mb-3 flex-row items-center justify-between">
-                        <Text className="text-lg font-semibold text-gray-800">
-                            Live Classes
+                            Edit Profile
                         </Text>
-                        <TouchableOpacity
-                            className="rounded bg-indigo-100 px-3 py-1"
-                            onPress={addLiveClass}
-                        >
-                            <Text className="text-indigo-700">+ Add Class</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    {liveClasses.map((liveClass, index) => (
-                        <View
-                            key={index}
-                            className="mb-4 border-b border-gray-200 pb-4"
-                        >
-                            <View className="mb-2 flex-row items-center justify-between">
-                                <Text className="text-sm font-medium text-gray-700">
-                                    Live Class {index + 1}
-                                </Text>
-                                {liveClasses.length > 1 && (
-                                    <TouchableOpacity
-                                        className="rounded bg-red-100 px-2 py-1"
-                                        onPress={() => removeLiveClass(index)}
-                                    >
-                                        <Text className="text-xs text-red-600">
-                                            Remove
-                                        </Text>
-                                    </TouchableOpacity>
-                                )}
-                            </View>
-
-                            <TextInput
-                                className="mb-2 rounded border border-gray-300 p-2"
-                                placeholder="Class Title"
-                                value={liveClass.title}
-                                onChangeText={text => {
-                                    const updatedLiveClasses = [...liveClasses];
-                                    updatedLiveClasses[index].title = text;
-                                    setLiveClasses(updatedLiveClasses);
-                                }}
-                            />
-
-                            <TextInput
-                                className="mb-2 rounded border border-gray-300 p-2"
-                                placeholder="Schedule (YYYY-MM-DD HH:MM)"
-                                value={liveClass.schedule}
-                                onChangeText={text => {
-                                    const updatedLiveClasses = [...liveClasses];
-                                    updatedLiveClasses[index].schedule = text;
-                                    setLiveClasses(updatedLiveClasses);
-                                }}
-                            />
-
-                            <TextInput
-                                className="mb-2 rounded border border-gray-300 p-2"
-                                placeholder="Duration (minutes)"
-                                keyboardType="numeric"
-                                value={liveClass.duration}
-                                onChangeText={text => {
-                                    const updatedLiveClasses = [...liveClasses];
-                                    updatedLiveClasses[index].duration = text;
-                                    setLiveClasses(updatedLiveClasses);
-                                }}
-                            />
-
-                            <TextInput
-                                className="rounded border border-gray-300 p-2"
-                                placeholder="Meeting Link"
-                                value={liveClass.link}
-                                onChangeText={text => {
-                                    const updatedLiveClasses = [...liveClasses];
-                                    updatedLiveClasses[index].link = text;
-                                    setLiveClasses(updatedLiveClasses);
-                                }}
-                            />
-                        </View>
-                    ))}
+                    </TouchableOpacity>
                 </View>
+            </View>
 
-                {/* Submit Button */}
+            {/* Content */}
+            {loading ? (
+                <View className="flex-1 items-center justify-center">
+                    <ActivityIndicator size="large" color="#9333ea" />
+                </View>
+            ) : activeTab === 'info' ? (
+                renderProfileInfo()
+            ) : (
+                renderSetupProfile()
+            )}
+
+            {/* Bottom Menu */}
+            <View className="border-t border-gray-200 bg-white p-4">
                 <TouchableOpacity
-                    className="mb-8 rounded-lg bg-indigo-600 p-3"
-                    onPress={handleSubmit}
+                    className="flex-row items-center justify-between py-3"
+                    onPress={() => router.push('/teacher/settings')}
                 >
-                    <Text className="text-center font-semibold text-white">
-                        Create Course
-                    </Text>
+                    <Text className="text-gray-700">Settings</Text>
+                    <Feather name="chevron-right" size={20} color="#9ca3af" />
                 </TouchableOpacity>
-            </ScrollView>
+                <TouchableOpacity
+                    className="flex-row items-center justify-between py-3"
+                    onPress={handleLogout}
+                >
+                    <Text className="text-red-600">Logout</Text>
+                    <Feather name="chevron-right" size={20} color="#9ca3af" />
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }
 
-export default CreateCourse;
+const styles = StyleSheet.create({
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 8,
+        color: '#374151',
+    },
+    input: {
+        borderWidth: 1,
+        borderColor: '#d1d5db',
+        borderRadius: 8,
+        padding: 12,
+        marginBottom: 16,
+        backgroundColor: 'white',
+    },
+    tag: {
+        backgroundColor: '#f3e8ff',
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 16,
+        marginRight: 8,
+        marginBottom: 8,
+    },
+});
+
+export default TeacherProfileScreen;

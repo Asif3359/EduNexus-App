@@ -8,11 +8,17 @@ import {
     KeyboardAvoidingView,
     Platform,
     Image,
+    ScrollView,
+    Dimensions,
+    Keyboard,
 } from 'react-native';
 import { Stack } from 'expo-router';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { usePayment } from './hooks/usePayment';
+
+const { width } = Dimensions.get('window');
+
 export default function PaymentScreen() {
     const {
         loading,
@@ -27,7 +33,8 @@ export default function PaymentScreen() {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            className="flex-1 bg-gray-50"
+            style={styles.container}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
         >
             <Stack.Screen
                 options={{
@@ -36,203 +43,406 @@ export default function PaymentScreen() {
                     headerTintColor: '#4F46E5',
                 }}
             />
-            <LinearGradient
-                colors={['#F9FAFB', '#E0E7FF']}
-                className="flex-1 p-6"
+
+            <ScrollView
+                contentContainerStyle={styles.scrollContainer}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}
+                bounces={false}
             >
-                <View className="mb-8">
-                    <Text className="mb-2 text-3xl font-bold text-gray-900">
-                        Payment Details for Teacher Application
-                    </Text>
-                    <Text className="text-gray-500">
-                        Enter your card information to complete the payment
-                    </Text>
-                </View>
-
-                {/* Card Preview */}
-                <View className="mb-8 rounded-xl bg-indigo-600 p-6 shadow-lg">
-                    <View className="mb-8 flex-row items-center justify-between">
-                        <Text className="text-lg font-semibold text-white">
-                            Credit Card
+                <LinearGradient
+                    colors={['#F9FAFB', '#E0E7FF']}
+                    style={styles.gradientContainer}
+                >
+                    {/* Header Section */}
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.headerTitle}>
+                            Payment Details for Teacher Application
                         </Text>
-                        <Image
-                            source={require('../../assets/images/icon.png')}
-                            className="h-8 w-10"
-                            resizeMode="contain"
-                        />
+                        <Text style={styles.headerSubtitle}>
+                            Enter your card information to complete the payment
+                        </Text>
                     </View>
-                    <Text className="mb-6 text-xl font-bold tracking-wider text-white">
-                        {cardDetails.number || '•••• •••• •••• ••••'}
-                    </Text>
-                    <View className="flex-row justify-between">
-                        <View>
-                            <Text className="mb-1 text-xs text-indigo-200">
-                                Expiry
-                            </Text>
-                            <Text className="font-medium text-white">
-                                {cardDetails.expiry || '••/••'}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text className="mb-1 text-xs text-indigo-200">
-                                CVC
-                            </Text>
-                            <Text className="font-medium text-white">
-                                {cardDetails.cvc || '•••'}
-                            </Text>
-                        </View>
-                        <Image
-                            source={require('../../assets/images/icon.png')}
-                            className="h-8 w-12"
-                            resizeMode="contain"
-                        />
-                    </View>
-                </View>
 
-                {/* Form */}
-                <View className="rounded-2xl bg-white p-6 shadow-sm">
-                    {/* Card Number */}
-                    <View className="mb-5">
-                        <View className="mb-2 flex-row items-center justify-between">
-                            <Text className="font-medium text-gray-700">
-                                Card Number
+                    {/* Card Preview */}
+                    <View style={styles.cardPreview}>
+                        <View style={styles.cardHeader}>
+                            <Text style={styles.cardHeaderText}>
+                                Credit Card
                             </Text>
-                            {cardErrors.number && (
-                                <Text className="text-xs text-red-500">
-                                    {cardErrors.number}
-                                </Text>
-                            )}
-                        </View>
-                        <View
-                            className={`flex-row items-center rounded-lg border p-3 ${cardErrors.number ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
-                        >
                             <MaterialIcons
-                                name="credit-card"
-                                size={20}
-                                color="#6B7280"
-                                className="mr-2"
+                                name="sim-card"
+                                size={24}
+                                color="white"
                             />
-                            <TextInput
-                                className="flex-1 text-gray-800"
-                                placeholder="1234 5678 9012 3456"
-                                keyboardType="numeric"
-                                value={
-                                    cardDetails.number || '4242 4242 4242 4242'
-                                }
-                                onChangeText={handleCardNumberChange}
-                                maxLength={19}
+                        </View>
+                        <Text style={styles.cardNumber}>
+                            {cardDetails.number || '4242 4242 4242 4242'}
+                        </Text>
+                        <View style={styles.cardFooter}>
+                            <View>
+                                <Text style={styles.cardLabel}>Expiry</Text>
+                                <Text style={styles.cardValue}>
+                                    {cardDetails.expiry || '12/25'}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={styles.cardLabel}>CVC</Text>
+                                <Text style={styles.cardValue}>
+                                    {cardDetails.cvc || '123'}
+                                </Text>
+                            </View>
+                            <MaterialCommunityIcons
+                                name="contactless-payment"
+                                size={24}
+                                color="white"
                             />
                         </View>
                     </View>
 
-                    {/* Expiry and CVC */}
-                    <View className="mb-5 flex-row space-x-4">
-                        <View className="flex-1">
-                            <View className="mb-2 flex-row items-center justify-between">
-                                <Text className="font-medium text-gray-700">
-                                    Expiry Date
+                    {/* Form Section */}
+                    <View style={styles.formContainer}>
+                        {/* Card Number */}
+                        <View style={styles.inputContainer}>
+                            <View style={styles.inputHeader}>
+                                <Text style={styles.inputLabel}>
+                                    Card Number
                                 </Text>
-                                {cardErrors.expiry && (
-                                    <Text className="text-xs text-red-500">
-                                        {cardErrors.expiry}
+                                {cardErrors.number && (
+                                    <Text style={styles.errorText}>
+                                        {cardErrors.number}
                                     </Text>
                                 )}
                             </View>
                             <View
-                                className={`flex-row items-center rounded-lg border p-3 ${cardErrors.expiry ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
+                                style={[
+                                    styles.inputField,
+                                    cardErrors.number && styles.inputError,
+                                ]}
                             >
                                 <MaterialIcons
-                                    name="calendar-today"
-                                    size={18}
+                                    name="credit-card"
+                                    size={20}
                                     color="#6B7280"
-                                    className="mr-2"
+                                    style={styles.inputIcon}
                                 />
                                 <TextInput
-                                    className="flex-1 text-gray-800"
-                                    placeholder="MM/YY"
-                                    keyboardType="numeric"
-                                    value={cardDetails.expiry || '12/25'}
-                                    onChangeText={handleExpiryChange}
-                                    maxLength={5}
+                                    style={styles.textInput}
+                                    placeholder="1234 5678 9012 3456"
+                                    placeholderTextColor="#9CA3AF"
+                                    keyboardType="number-pad"
+                                    value={cardDetails.number}
+                                    onChangeText={handleCardNumberChange}
+                                    maxLength={19}
+                                    returnKeyType="next"
+                                    onSubmitEditing={() => {
+                                        // Focus next field logic if needed
+                                    }}
                                 />
                             </View>
                         </View>
-                        <View className="flex-1">
-                            <View className="mb-2 flex-row items-center justify-between">
-                                <Text className="font-medium text-gray-700">
-                                    CVC
-                                </Text>
-                                {cardErrors.cvc && (
-                                    <Text className="text-xs text-red-500">
-                                        {cardErrors.cvc}
-                                    </Text>
-                                )}
-                            </View>
-                            <View
-                                className={`flex-row items-center rounded-lg border p-3 ${cardErrors.cvc ? 'border-red-400 bg-red-50' : 'border-gray-200'}`}
-                            >
-                                <MaterialIcons
-                                    name="lock"
-                                    size={18}
-                                    color="#6B7280"
-                                    className="mr-2"
-                                />
-                                <TextInput
-                                    className="flex-1 text-gray-800"
-                                    placeholder="123"
-                                    keyboardType="numeric"
-                                    value={cardDetails.cvc || '123'}
-                                    onChangeText={handleCvcChange}
-                                    maxLength={3}
-                                    secureTextEntry
-                                />
-                            </View>
-                        </View>
-                    </View>
 
-                    <TouchableOpacity
-                        className="mt-2 items-center justify-center rounded-xl py-4"
-                        onPress={handleSubmitPayment}
-                        disabled={loading}
-                        activeOpacity={0.8}
-                    >
-                        <LinearGradient
-                            colors={['#4F46E5', '#7C3AED']}
-                            className="w-full items-center rounded-xl py-4"
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
+                        {/* Expiry and CVC */}
+                        <View style={styles.rowInputContainer}>
+                            <View
+                                style={[
+                                    styles.inputContainer,
+                                    { flex: 1, marginRight: 8 },
+                                ]}
+                            >
+                                <View style={styles.inputHeader}>
+                                    <Text style={styles.inputLabel}>
+                                        Expiry Date
+                                    </Text>
+                                    {cardErrors.expiry && (
+                                        <Text style={styles.errorText}>
+                                            {cardErrors.expiry}
+                                        </Text>
+                                    )}
+                                </View>
+                                <View
+                                    style={[
+                                        styles.inputField,
+                                        cardErrors.expiry && styles.inputError,
+                                    ]}
+                                >
+                                    <MaterialIcons
+                                        name="calendar-today"
+                                        size={18}
+                                        color="#6B7280"
+                                        style={styles.inputIcon}
+                                    />
+                                    <TextInput
+                                        style={styles.textInput}
+                                        placeholder="MM/YY"
+                                        placeholderTextColor="#9CA3AF"
+                                        keyboardType="number-pad"
+                                        value={cardDetails.expiry}
+                                        onChangeText={handleExpiryChange}
+                                        maxLength={5}
+                                        returnKeyType="next"
+                                    />
+                                </View>
+                            </View>
+
+                            <View
+                                style={[
+                                    styles.inputContainer,
+                                    { flex: 1, marginLeft: 8 },
+                                ]}
+                            >
+                                <View style={styles.inputHeader}>
+                                    <Text style={styles.inputLabel}>CVC</Text>
+                                    {cardErrors.cvc && (
+                                        <Text style={styles.errorText}>
+                                            {cardErrors.cvc}
+                                        </Text>
+                                    )}
+                                </View>
+                                <View
+                                    style={[
+                                        styles.inputField,
+                                        cardErrors.cvc && styles.inputError,
+                                    ]}
+                                >
+                                    <MaterialIcons
+                                        name="lock"
+                                        size={18}
+                                        color="#6B7280"
+                                        style={styles.inputIcon}
+                                    />
+                                    <TextInput
+                                        style={styles.textInput}
+                                        placeholder="•••"
+                                        placeholderTextColor="#9CA3AF"
+                                        keyboardType="number-pad"
+                                        value={cardDetails.cvc}
+                                        onChangeText={handleCvcChange}
+                                        maxLength={3}
+                                        secureTextEntry
+                                        returnKeyType="done"
+                                        onSubmitEditing={Keyboard.dismiss}
+                                    />
+                                </View>
+                            </View>
+                        </View>
+
+                        {/* Submit Button */}
+                        <TouchableOpacity
+                            style={styles.submitButton}
+                            onPress={handleSubmitPayment}
+                            disabled={loading}
+                            activeOpacity={0.7}
                         >
-                            {loading ? (
-                                <ActivityIndicator color="white" />
-                            ) : (
-                                <Text className="text-lg font-bold text-white">
-                                    Pay $10.00
-                                </Text>
-                            )}
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
+                            <LinearGradient
+                                colors={['#4F46E5', '#7C3AED']}
+                                style={styles.gradientButton}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator
+                                        color="white"
+                                        size="small"
+                                    />
+                                ) : (
+                                    <Text style={styles.buttonText}>
+                                        Pay $10.00
+                                    </Text>
+                                )}
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    </View>
 
-                <View className="mt-6 flex-row items-center justify-center">
-                    <MaterialIcons name="security" size={18} color="#4F46E5" />
-                    <Text className="ml-2 text-sm text-indigo-600">
-                        Your payment is securely encrypted
-                    </Text>
-                </View>
-            </LinearGradient>
+                    {/* Security Footer */}
+                    <View style={styles.securityFooter}>
+                        <MaterialIcons
+                            name="security"
+                            size={18}
+                            color="#4F46E5"
+                        />
+                        <Text style={styles.securityText}>
+                            Your payment is securely encrypted
+                        </Text>
+                    </View>
+                </LinearGradient>
+            </ScrollView>
         </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
-    shadow: {
+    container: {
+        flex: 1,
+        backgroundColor: '#F9FAFB',
+    },
+    scrollContainer: {
+        flexGrow: 1,
+    },
+    gradientContainer: {
+        flex: 1,
+        padding: 24,
+        paddingBottom: 40,
+    },
+    headerContainer: {
+        marginBottom: 32,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#111827',
+        marginBottom: 8,
+        lineHeight: 32,
+    },
+    headerSubtitle: {
+        fontSize: 16,
+        color: '#6B7280',
+        lineHeight: 24,
+    },
+    cardPreview: {
+        borderRadius: 12,
+        backgroundColor: '#4F46E5',
+        padding: 24,
+        marginBottom: 32,
         shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 4,
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 32,
+    },
+    cardHeaderText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: 'white',
+    },
+    cardIcon: {
+        height: 32,
+        width: 40,
+    },
+    cardNumber: {
+        fontSize: 22,
+        fontWeight: '600',
+        letterSpacing: 1,
+        color: 'white',
+        marginBottom: 32,
+        fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    },
+    cardFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-end',
+    },
+    cardLabel: {
+        fontSize: 12,
+        color: '#A5B4FC',
+        marginBottom: 4,
+    },
+    cardValue: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: 'white',
+        fontFamily: Platform.OS === 'ios' ? 'Courier New' : 'monospace',
+    },
+    cardBrandIcon: {
+        height: 32,
+        width: 48,
+    },
+    formContainer: {
+        borderRadius: 16,
+        backgroundColor: 'white',
+        padding: 24,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
         shadowRadius: 6,
-        elevation: 3,
+        elevation: 2,
+    },
+    inputContainer: {
+        marginBottom: 20,
+    },
+    rowInputContainer: {
+        flexDirection: 'row',
+        marginBottom: 20,
+    },
+    inputHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    inputLabel: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#374151',
+    },
+    errorText: {
+        fontSize: 12,
+        color: '#EF4444',
+    },
+    inputField: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#E5E7EB',
+        paddingHorizontal: 16,
+        paddingVertical: 14,
+        backgroundColor: '#F9FAFB',
+    },
+    inputError: {
+        borderColor: '#FCA5A5',
+        backgroundColor: '#FEE2E2',
+    },
+    inputIcon: {
+        marginRight: 12,
+    },
+    textInput: {
+        flex: 1,
+        fontSize: 16,
+        color: '#111827',
+        padding: 0,
+    },
+    submitButton: {
+        borderRadius: 12,
+        overflow: 'hidden',
+        marginTop: 4,
+    },
+    gradientButton: {
+        width: '100%',
+        paddingVertical: 16,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: 'white',
+    },
+    securityFooter: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 10,
+    },
+    securityText: {
+        fontSize: 14,
+        color: '#4F46E5',
+        marginLeft: 8,
+    },
+});
+
+// For responsive design
+const responsiveStyles = StyleSheet.create({
+    headerTitle: {
+        fontSize: width < 400 ? 22 : 24,
+    },
+    cardNumber: {
+        fontSize: width < 400 ? 18 : 22,
     },
 });

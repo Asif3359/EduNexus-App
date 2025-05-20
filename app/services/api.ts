@@ -1,7 +1,7 @@
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const API_URL = Constants.expoConfig?.extra?.BACKEND_API;
+const API_URL = 'http://192.168.0.109:8000/api';
 
 export const api = {
     async createPaymentIntent(data: { amount: number; currency: string }) {
@@ -92,19 +92,19 @@ export const api = {
         try {
             console.log(courseId, location);
             console.log('API Request:', {
-                url: `${API_URL}/courses/full-course/${courseId}/${location}`,
+                url: `${API_URL}/courses/full-course/${courseId}?location=${location}`,
                 courseId,
                 location,
             });
 
             const response = await fetch(
-                `${API_URL}/courses/full-course/${courseId}/${location}`,
+                `${API_URL}/courses/full-course/${courseId}?location=${location}`,
                 {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
-                        Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
+                        // Authorization: `Bearer ${await AsyncStorage.getItem('token')}`,
                     },
                 }
             );

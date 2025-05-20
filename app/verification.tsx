@@ -21,12 +21,13 @@ export default function VerificationScreen() {
     ]);
     const [timeLeft, setTimeLeft] = useState(60);
     const [isResendDisabled, setIsResendDisabled] = useState(true);
-    const inputRefs = useRef<Array<TextInput | null>>([]);
+    const inputRefs = useRef<(TextInput | null)[]>([]);
 
-    const { source } = useLocalSearchParams(); // Get the query param
+    const { source, email } = useLocalSearchParams(); // Get the query param
 
     useEffect(() => {
         console.log('Navigated from:', source); // Prints the source page, e.g., 'forgotPassword'
+        console.log('Email:', email); // Prints the source page, e.g., 'forgotPassword'
     }, [source]);
 
     useEffect(() => {
@@ -93,7 +94,7 @@ export default function VerificationScreen() {
             <Text className="mt-4 text-gray-500">
                 We sent a verification code to{' '}
             </Text>
-            <Text className="font-bold text-gray-500">example@gmail.com</Text>
+            <Text className="font-bold text-gray-500">{email}</Text>
 
             <View className="mt-4 w-full flex-col items-center">
                 <View className="mt-6 flex-row gap-4 space-x-2">

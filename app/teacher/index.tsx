@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -7,6 +7,7 @@ import {
     Image,
     FlatList,
     Alert,
+    RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -17,63 +18,67 @@ import {
     AntDesign,
 } from '@expo/vector-icons';
 import BottomNavBarTeacher from '../components/BottomNavBarTeacher';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { convertImageUrl } from '../components/convertImageUrl';
 import axios from 'axios';
 
 function TeacherHome() {
-    // // Sample data - in a real app, this would come from your database/API
-    // const courses = [
-    //     { id: 1, title: 'Advanced React Native', students: 42, modules: 6 },
-    //     { id: 2, title: 'UI/UX Design Fundamentals', students: 28, modules: 5 },
-    //     { id: 3, title: 'JavaScript Masterclass', students: 56, modules: 8 },
-    // ];
-
     const [upcomingClasses, setUpcomingClasses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [courses, setCourses] = useState<any[]>([]); // Removed Course type since it's not defined
+    const [courses, setCourses] = useState<any[]>([]);
     const [refreshing, setRefreshing] = useState(false);
     const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
     const baseUrl = (Constants.expoConfig as any).extra.API_BASE_URL;
     const [teacher, setTeacher] = useState<any>(null);
 
-    useEffect(() => {
-        const fetchUpcomingClasses = async () => {
-            try {
-                const userIdValue = await AsyncStorage.getItem('userId');
-                const locationValue =
-                    await AsyncStorage.getItem('userLocation');
-                const response = await fetch(
-                    `${apiUrl}/scheduled-classes/${userIdValue}/?location=${locationValue}`
-                );
-                if (!response.ok)
-                    throw new Error('Failed to fetch upcoming classes');
-                const data = await response.json();
-                setUpcomingClasses(data.scheduled_classes);
-            } catch (err) {
-                setError(
-                    err instanceof Error
-                        ? err.message
-                        : ('An error occurred' as any)
-                );
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchUpcomingClasses();
-        fetchCourses();
-        fetchTeacherProfile();
+    const fetchData = useCallback(async () => {
+        try {
+            setRefreshing(true);
+            setLoading(true);
+
+            // Fetch all data in parallel
+            await Promise.all([
+                fetchUpcomingClasses(),
+                fetchCourses(),
+                fetchTeacherProfile(),
+            ]);
+
+            setError(null);
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : ('An error occurred' as any)
+            );
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
     }, []);
+
+    const fetchUpcomingClasses = async () => {
+        try {
+            const userIdValue = await AsyncStorage.getItem('userId');
+            const locationValue = await AsyncStorage.getItem('userLocation');
+            const response = await fetch(
+                `${apiUrl}/scheduled-classes/${userIdValue}/?location=${locationValue}`
+            );
+            if (!response.ok)
+                throw new Error('Failed to fetch upcoming classes');
+            const data = await response.json();
+            setUpcomingClasses(data.scheduled_classes);
+        } catch (err) {
+            throw err; // Re-throw to be caught in fetchData
+        }
+    };
 
     const fetchCourses = async () => {
         try {
             const userLocation =
                 (await AsyncStorage.getItem('userLocation')) || 'Khulna';
             const userId = await AsyncStorage.getItem('userId');
-            console.log('userId :', userId);
 
             const response = await fetch(
                 `${apiUrl}/courses/teacher/${userId}?location=${encodeURIComponent(
@@ -82,17 +87,12 @@ function TeacherHome() {
             );
             const data = await response.json();
 
-            console.log('data :', data);
-
             if (!response.ok) {
                 throw new Error(data.message || 'Failed to fetch courses');
             }
             setCourses(data.courses);
         } catch (error) {
-            console.error('Error fetching courses:', error);
-            Alert.alert('Error', 'Failed to load courses. Please try again.');
-        } finally {
-            setLoading(false);
+            throw error; // Re-throw to be caught in fetchData
         }
     };
 
@@ -101,9 +101,8 @@ function TeacherHome() {
             const userId = await AsyncStorage.getItem('userId');
             const userLocation = await AsyncStorage.getItem('userLocation');
             if (!userId) {
-                Alert.alert('Error', 'Missing user ID.');
-                setLoading(false);
-                return;
+                router.push('/login');
+                throw new Error('Missing user ID');
             }
 
             const response = await axios.get(
@@ -120,21 +119,25 @@ function TeacherHome() {
             if (response.data.success) {
                 setTeacher(response.data.data);
             } else {
-                Alert.alert(
-                    'Error',
+                throw new Error(
                     response.data.message || 'Failed to fetch profile.'
                 );
             }
         } catch (error) {
-            console.error('Profile fetch error:', error);
-            Alert.alert(
-                'Error',
-                'An error occurred while fetching the profile.'
-            );
-        } finally {
-            setLoading(false);
+            throw error; // Re-throw to be caught in fetchData
         }
     };
+
+    // Use focus effect to refresh when screen comes into focus
+    useFocusEffect(
+        useCallback(() => {
+            fetchData();
+        }, [fetchData])
+    );
+
+    useEffect(() => {
+        fetchData();
+    }, [fetchData]);
 
     const stats = {
         totalStudents: teacher?.total_students || 0,
@@ -147,9 +150,21 @@ function TeacherHome() {
         router.push('/teacher/courseList');
     };
 
+    const onRefresh = useCallback(() => {
+        fetchData();
+    }, [fetchData]);
+
     return (
         <SafeAreaView className="flex-1 bg-gray-50">
-            <ScrollView className="mb-24 px-4 pt-4">
+            <ScrollView
+                className="mb-24 px-4 pt-4"
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                    />
+                }
+            >
                 {/* Header with welcome and notifications */}
                 <View className="mb-6 flex-row items-center justify-between">
                     <View>
@@ -240,17 +255,9 @@ function TeacherHome() {
                                 className="mr-4 w-64 rounded-xl bg-white p-4 shadow-sm"
                             >
                                 <View className="mb-3 flex h-32 items-center justify-center rounded-lg bg-purple-100">
-                                    {/* <Ionicons
-                                        name="book-outline"
-                                        size={48}
-                                        color="#9333ea"
-                                    /> */}
                                     <Image
                                         source={{
-                                            uri: convertImageUrl(
-                                                item.thumbnail,
-                                                baseUrl
-                                            ),
+                                            uri: item.thumbnail,
                                         }}
                                         className="h-full w-full"
                                     />
@@ -347,54 +354,6 @@ function TeacherHome() {
                     </View>
                 </View>
 
-                {/* Recent Students
-                <View className="mb-6">
-                    <View className="mb-3 flex-row items-center justify-between">
-                        <Text className="text-xl font-bold">
-                            Recent Students
-                        </Text>
-                        <TouchableOpacity>
-                            <Text className="text-purple-600">See All</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <View className="rounded-xl bg-white p-4 shadow-sm">
-                        {recentStudents.map(student => (
-                            <TouchableOpacity
-                                key={student.id}
-                                className="mb-3 flex-row items-center border-b border-gray-100 pb-3 last:mb-0 last:border-0 last:pb-0"
-                            >
-                                <View className="mr-3 h-10 w-10 overflow-hidden rounded-full bg-gray-200">
-                                    <Image
-                                        source={{
-                                            uri:
-                                                'https://randomuser.me/api/portraits/men/' +
-                                                student.id +
-                                                '.jpg',
-                                        }}
-                                        className="h-full w-full"
-                                    />
-                                </View>
-                                <View className="flex-1">
-                                    <Text className="font-bold">
-                                        {student.name}
-                                    </Text>
-                                    <Text className="text-sm text-gray-500">
-                                        {student.course}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity className="p-2">
-                                    <Ionicons
-                                        name="chatbox-ellipses-outline"
-                                        size={20}
-                                        color="#9333ea"
-                                    />
-                                </TouchableOpacity>
-                            </TouchableOpacity>
-                        ))}
-                    </View>
-                </View> */}
-
                 {/* Quick Actions */}
                 <View className="mb-6">
                     <Text className="mb-3 text-xl font-bold">
@@ -427,7 +386,10 @@ function TeacherHome() {
                             </View>
                             <Text className="font-medium">Schedule Class</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                        <TouchableOpacity
+                            onPress={() => router.push('/teacher/analytics')}
+                            className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm"
+                        >
                             <View className="mr-3 rounded-lg bg-green-100 p-2">
                                 <Ionicons
                                     name="analytics-outline"
@@ -437,7 +399,10 @@ function TeacherHome() {
                             </View>
                             <Text className="font-medium">View Analytics</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm">
+                        <TouchableOpacity
+                            onPress={() => router.push('/teacher/reports')}
+                            className="w-[48%] flex-row items-center rounded-xl bg-white p-4 shadow-sm"
+                        >
                             <View className="mr-3 rounded-lg bg-yellow-100 p-2">
                                 <Ionicons
                                     name="document-text-outline"

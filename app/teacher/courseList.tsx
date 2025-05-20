@@ -47,6 +47,11 @@ function CourseList() {
                 (await AsyncStorage.getItem('userLocation')) || 'Khulna';
 
             const userId = await AsyncStorage.getItem('userId');
+            // if userId is not found, redirect to login
+            if (!userId) {
+                router.push('/login');
+                return;
+            }
 
             const response = await fetch(
                 `${apiUrl}/courses/teacher/${userId}?location=${encodeURIComponent(userLocation)}`
@@ -130,12 +135,7 @@ function CourseList() {
                                 <View className="h-36 flex-row">
                                     <Image
                                         source={{
-                                            uri:
-                                                convertImageUrl(
-                                                    course.thumbnail,
-                                                    baseUrl
-                                                ) ||
-                                                'https://images.unsplash.com/photo-1541178735493-479c1a27ed24?q=80&w=1471&auto=format&fit=crop',
+                                            uri: course.thumbnail || '',
                                         }}
                                         className="h-full w-1/3"
                                         resizeMode="cover"

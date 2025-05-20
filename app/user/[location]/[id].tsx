@@ -84,7 +84,7 @@ export default function CourseDetailsScreen() {
                     teacherEmail
                 );
                 setCourse(data as unknown as CourseDetails);
-                console.log(data);
+                console.log(data.location);
             } catch (err) {
                 setError(
                     err instanceof Error ? err.message : 'Failed to load course'
@@ -113,10 +113,9 @@ export default function CourseDetailsScreen() {
                     location,
                     teacherEmail
                 );
-                console.log(response.is_enrolled);
                 setIsEnrolled(response.is_enrolled);
             } catch (error) {
-                console.error('Failed to check enrollment:', error);
+                console.error('Failed to check enrollment cc:', error);
                 // Don't update isEnrolled on error, keep previous state
             } finally {
                 setEnrollmentLoading(false);
@@ -189,7 +188,7 @@ export default function CourseDetailsScreen() {
                 {course.thumbnail && (
                     <Image
                         source={{
-                            uri: convertImageUrl(course.thumbnail, baseUrl),
+                            uri: course.thumbnail || '',
                         }}
                         className="h-64 w-full"
                         resizeMode="cover"
@@ -359,7 +358,7 @@ export default function CourseDetailsScreen() {
                                                                         moduleId:
                                                                             module.id,
                                                                         location:
-                                                                            course.location.toLowerCase(),
+                                                                            course.location,
                                                                     },
                                                                 });
                                                             } else {

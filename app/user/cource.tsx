@@ -146,7 +146,7 @@ export default function CourseScreen() {
             {/* Thumbnail Image */}
             {item.thumbnail ? (
                 <Image
-                    source={{ uri: convertImageUrl(item.thumbnail, baseuri) }}
+                    source={{ uri: item.thumbnail }}
                     className="mb-3 h-40 w-full rounded-xl"
                     resizeMode="cover"
                 />

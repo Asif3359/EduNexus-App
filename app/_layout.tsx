@@ -114,6 +114,13 @@ export default function RootLayout() {
                             headerShown: true,
                         }}
                     />
+                    <Stack.Screen
+                        name="user/profileDetails"
+                        options={{
+                            title: 'Profile Details',
+                            headerShown: true,
+                        }}
+                    />
 
                     {/* Teacher */}
                     <Stack.Screen
@@ -149,6 +156,21 @@ export default function RootLayout() {
                         name="teacher/schedule"
                         options={{
                             title: 'Scheduled Classes',
+                            headerShown: true,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="manageLessons/addVideo"
+                        options={{ title: 'Add Video', headerShown: true }}
+                    />
+                    <Stack.Screen
+                        name="manageLessons/addLiveClass"
+                        options={{ title: 'Add Live Class', headerShown: true }}
+                    />
+                    <Stack.Screen
+                        name="teacher/profileDetails"
+                        options={{
+                            title: 'Profile Details',
                             headerShown: true,
                         }}
                     />

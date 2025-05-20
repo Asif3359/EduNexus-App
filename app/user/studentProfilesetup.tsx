@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -304,9 +305,6 @@ function StudentProfilesetup() {
     return (
         <SafeAreaView className="flex-1 bg-white">
             {/* Title */}
-            <Text className="bg-purple-700 py-6 text-center text-2xl font-bold text-white">
-                Setup your profile
-            </Text>
             <ScrollView className="mb-20 mt-2 px-4 py-2">
                 {/* Profile Picture */}
                 <Text className="mb-4 mt-2 items-start text-xl font-bold">

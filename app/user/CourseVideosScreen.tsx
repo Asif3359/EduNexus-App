@@ -85,6 +85,8 @@ export default function CourseVideosScreen() {
                     throw new Error('Course ID is required');
                 }
 
+                console.log('course Id', courseId);
+                console.log('location l', location);
                 const data = await api.getCourseDetails(courseId, location);
                 setCourse(data);
 

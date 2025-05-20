@@ -273,9 +273,7 @@ export default function TeacherCourseDetail() {
             <View className="relative">
                 <Image
                     source={{
-                        uri:
-                            convertImageUrl(course.thumbnail, baseURI) ||
-                            'https://images.unsplash.com/photo-1541178735493-479c1a27ed24?q=80&w=1471&auto=format&fit=crop',
+                        uri: course.thumbnail || '',
                     }}
                     className="h-48 w-full"
                     resizeMode="cover"

@@ -12,8 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { WebView } from 'react-native-webview';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BottomNavigationBar from '../components/BottomNavigationBar';
-
-const API_BASE_URL = 'http://10.0.2.2:8000/api';
+import Constants from 'expo-constants';
 
 function UserHome() {
     const router = useRouter();
@@ -23,6 +22,8 @@ function UserHome() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userLocation, setUserLocation] = useState('');
+    const apiUrl = (Constants.expoConfig as any).extra.BACKEND_API;
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -33,9 +34,9 @@ function UserHome() {
                 // Fetch all data in parallel
                 const [suggestedRes, topRatedRes, topSellingRes] =
                     await Promise.all([
-                        fetch(`${API_BASE_URL}/courses/suggested`),
-                        fetch(`${API_BASE_URL}/courses/top-rated`),
-                        fetch(`${API_BASE_URL}/courses/top-selling`),
+                        fetch(`${apiUrl}/courses/suggested`),
+                        fetch(`${apiUrl}/courses/top-rated`),
+                        fetch(`${apiUrl}/courses/top-selling`),
                     ]);
 
                 if (!suggestedRes.ok || !topRatedRes.ok || !topSellingRes.ok) {
@@ -53,8 +54,11 @@ function UserHome() {
                 console.log('topSelling :', topSelling);
 
                 setSuggestedCourses(suggested);
+                console.log('suggestedCourses :', suggestedCourses);
                 setTopRatedCourses(topRated);
+                console.log('topRatedCourses :', topRatedCourses);
                 setTopSellingCourses(topSelling);
+                console.log('topSellingCourses :', topSellingCourses);
             } catch (err: unknown) {
                 console.error('Error fetching data:', err);
                 setError(
@@ -126,6 +130,7 @@ function UserHome() {
                             params: {
                                 location: userLocation || '',
                                 id: course.id,
+                                teacherEmail: course.teacherEmail,
                             },
                         })
                     }
